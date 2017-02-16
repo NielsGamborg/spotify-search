@@ -21,21 +21,34 @@ Vue.component('search-result', {
     <table v-if="searchResult.length>0">
         <thead>
             <tr>
-                <th class="no">No.</th><th>Track</th><th>Artist</th><th>Popularity</th>
+                <th class="no">No.</th>
+                <th>Track</th>
+                <th>Duration</th>
+                <th>Artist</th>
+                <th>Popularity</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(track, index) in searchResult">
                 <td class="no">{{index + 1 + offset}}</td>
                 <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
+                <td>{{track.duration_ms | minutesSeconds }}</td>
                 <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
-                <td>{{track.popularity}}%</td>
+                <td>{{ track.popularity }}%</td>
             </tr>
         <tbody>
     </table>
     </div>`,
     data: function() {
         return { searchquery: '' }
+    },
+    filters: {
+        minutesSeconds: function(value) {
+            if (!value) return '';
+            minutes = Math.floor(value / (1000 * 60));
+            seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
+            return minutes + ':' + seconds;
+        }
     }
 })
 
@@ -101,6 +114,9 @@ Vue.component('track-modal', {
             <img v-for="(image,index) in trackData.album.images" v-if="index == 1":src="image.url" alt="album photo" />
             <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }}, </p>           
             <p>Album: {{ trackData.album.name }}</p>
+            <p>
+                <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
+            </p>
         </div> 
         <table>
             <thead>
@@ -114,7 +130,7 @@ Vue.component('track-modal', {
             </tr>
             <tr>
                 <td>Duration</td>
-                <td>{{trackData.duration_ms }}</td>
+                <td>{{trackData.duration_ms | minutesSeconds }}</td>
             </tr>
             </tr>
             <tr>
@@ -126,8 +142,21 @@ Vue.component('track-modal', {
                 <td>Track number</td>
                 <td>{{trackData.track_number }}</td>
             </tr>
+            </tr>
+            <tr>
+                <td>Explicit</td>
+                <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
+            </tr>
         </table>
-    </div>`
+    </div>`,
+    filters: {
+        minutesSeconds: function(value) {
+            if (!value) return '';
+            minutes = Math.floor(value / (1000 * 60));
+            seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
+            return minutes + ':' + seconds;
+        }
+    }
 })
 
 app = new Vue({
@@ -138,7 +167,8 @@ app = new Vue({
             followers: {}
         },
         trackData: {
-            album: {}
+            album: {},
+            external_urls: {}
         },
         previous: null,
         next: null,
