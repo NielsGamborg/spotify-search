@@ -9,7 +9,7 @@ body {
     background-color: white;
     min-height: 800px;
     margin: 0 auto;
-    padding: .5em 1em 4em;
+    padding: .5em 2em 4em;
     max-width: 1200px;
 }
 
@@ -94,13 +94,13 @@ button {
 }
 
 .link {
-    color: #0066cc;
+    color: #0055aa;
     cursor: pointer;
     text-decoration: underline;
 }
 
 .link:hover {
-    color: #033399;
+    color: #002277;
 }
 
 
