@@ -15,8 +15,10 @@
         <div id="main">
             <search-box :get-search-result="getSearchResult"></search-box>
             <search-pager :total="total" :offset="offset" :get-search-result="getSearchResult"></search-pager>
-            <search-result :search-result="searchResult" :offset="offset"></search-result>
+            <search-result :search-result="searchResult" :offset="offset" :get-artist-data="getArtistData" :get-track-data="getTrackData"></search-result>
             <search-pager :total="total" :offset="offset" :get-search-result="getSearchResult"></search-pager>
+            <artist-modal :modal-data="modalData"></artist-modal>
+            <track-modal :track-data="trackData"></track-modal>
         </div>
 
     </div>
@@ -24,7 +26,7 @@
         <div class="closeSpinner" onclick="$('#spinner,#overlay').hide()">×</div>
         <div id="spinnerText">Loading...</div>
     </div>
-    <div id="overlay" class="modalOverlay"></div>
+    <div id="overlay" class="modalOverlay" onclick="$('#spinner, #overlay, .dataModal').hide()"></div>
 
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-resource@1.2.0/dist/vue-resource.min.js"></script>

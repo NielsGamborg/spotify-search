@@ -17,6 +17,10 @@ h1 {
     margin-top: .2em;
 }
 
+img {
+    max-width: 100%;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
@@ -31,6 +35,17 @@ td,
 th {
     border: 1px solid #ddd;
     padding: .5em 1em;
+}
+
+td.no,
+th.no {
+    padding: .5em .7em;
+    width: 2%;
+}
+
+td.no {
+    padding-right: .85em;
+    text-align: right;
 }
 
 button {
@@ -76,6 +91,16 @@ button {
 
 .pager {
     margin: .5em 0;
+}
+
+.link {
+    color: #0066cc;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.link:hover {
+    color: #033399;
 }
 
 
@@ -129,4 +154,88 @@ button {
     right: 0;
     top: 0;
     z-index: 100;
+}
+
+
+/*  Track and Artist Modal */
+
+.dataModal {
+    background: black;
+    border-radius: 5px;
+    color: white;
+    display: none;
+    min-height: 300px;
+    padding: 2em;
+    position: fixed;
+    top: 10%;
+    left: calc(50% - 400px);
+    width: 800px;
+    z-index: 500;
+}
+
+.hidePopUp {
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    font-size: 36px;
+    font-weight: bold;
+    margin: -1em -.7em;
+    padding: .2em;
+}
+
+.dataModal .column1 {
+    float: left;
+    margin-right: 5%;
+    max-width: 50%;
+}
+
+.dataModal .column1 p {
+    margin: .6em 0 .8em;
+}
+
+.dataModal h2 {
+    font-size: 28px;
+    margin: 0 0 1em;
+}
+
+.dataModal table {
+    width: 45%;
+}
+
+.dataModal th {
+    background: transparent;
+    border: 1px solid #666;
+    font-weight: bold;
+    text-align: center;
+}
+
+.dataModal td {
+    border: 1px solid #666;
+    padding: 1em;
+}
+
+.dataModal tr,
+.dataModal tr:nth-child(2n) {
+    background: black;
+}
+
+.dataModal a {
+    color: white;
+}
+
+.dataModal .playbtn {
+    background-color: #2ebd59;
+    border-radius: 500px;
+    color: #fff;
+    display: inline-block;
+    margin: 1em 0 0 -2px;
+    padding: .5em 1em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.dataModal .playbtn:hover {
+    background-color: #1ed760;
+    -webkit-transform: scale(1.03);
+    transform: scale(1.03);
 }
