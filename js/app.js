@@ -11,7 +11,7 @@ Vue.component('search-box', {
     },
     created: function() {
         this.getSearchResult('search', this.searchquery); // This fires initial search for developement
-    }
+    },
 })
 
 Vue.component('search-pager', {
@@ -50,9 +50,17 @@ Vue.component('search-result', {
     </div>`,
     data: function() {
         return {}
-    }
+    },
+    /* experimenting with sorting
+        computed: {
+            orderedsearchResult: function() {
+                return _.orderBy(this.searchResult, 'popularity')
+            }
+        },*/
+    created: function() {
+        //console.log('orderedsearchResult', this.orderedsearchResult)
+    },
 })
-
 
 
 Vue.component('artist-modal', {
@@ -61,8 +69,7 @@ Vue.component('artist-modal', {
     <div class="hidePopUp" onclick="$('.dataModal, #overlay').hide()">×</div>
     <h2>{{ modalData.name }}</h2>
     <div class="column1">
-    <img v-for="(image,index) in modalData.images" v-if="index == 1":src="image.url" alt="artist photo" />
-    <!-- <img :src="modalData.images[1].url" alt="artist photo" />-->
+    <img :src="modalData.images[1].url" alt="artist photo" />
     </div>
     <table>
         <thead>
@@ -99,7 +106,7 @@ Vue.component('track-modal', {
     <div class="hidePopUp" onclick="$('.dataModal, #overlay').hide()">×</div>
         <h2>{{ trackData.name }}</h2>
         <div class="column1">
-            <img v-for="(image,index) in trackData.album.images" v-if="index == 1":src="image.url" alt="album photo" />
+            <img :src="trackData.album.images[1].url" alt="album photo" />
             <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }}, </p>           
             <p>Album: {{ trackData.album.name }}</p>
             <p>
@@ -139,22 +146,16 @@ Vue.component('track-modal', {
     </div>`
 })
 
-Vue.filter('minutesSeconds', function(value) {
-    if (!value) return '';
-    minutes = Math.floor(value / (1000 * 60));
-    seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
-    return minutes + ':' + seconds;
-})
-
 app = new Vue({
     el: '#main',
     data: {
         searchResult: {},
         modalData: {
-            followers: {}
+            followers: {},
+            images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering. 
         },
         trackData: {
-            album: {},
+            album: { 'images': ['', ''] }, // images defined because of some kind of vue.js codecheck before rendering. 
             external_urls: {}
         },
         previous: null,
@@ -233,3 +234,11 @@ app = new Vue({
 
     }
 });
+
+
+Vue.filter('minutesSeconds', function(value) {
+    if (!value) return '';
+    minutes = Math.floor(value / (1000 * 60));
+    seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
+    return minutes + ':' + seconds;
+})

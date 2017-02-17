@@ -1,4 +1,4 @@
 TODOs
 
-Uhensigstsmæssig billede valg i track modal.
+
 
