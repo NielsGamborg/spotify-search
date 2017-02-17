@@ -14,6 +14,7 @@
 
         <div id="main">
             <search-box :get-search-result="getSearchResult"></search-box>
+            <search-top :search-result="searchResult" :get-track-data="getTrackData"></search-top>
             <search-pager :total="total" :offset="offset" :get-search-result="getSearchResult"></search-pager>
             <search-result :search-result="searchResult" :offset="offset" :get-artist-data="getArtistData" :get-track-data="getTrackData"></search-result>
             <search-pager :total="total" :offset="offset" :get-search-result="getSearchResult"></search-pager>

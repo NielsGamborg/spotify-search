@@ -1,3 +1,10 @@
+Vue.filter('minutesSeconds', function(value) {
+    if (!value) return '';
+    minutes = Math.floor(value / (1000 * 60));
+    seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
+    return minutes + ':' + seconds;
+})
+
 Vue.component('search-box', {
     props: ['getSearchResult'],
     template: `<div id="searchBox">
@@ -5,12 +12,12 @@ Vue.component('search-box', {
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)" >Search</button>
     </div>`,
     data: function() {
-        var nowQuery = (new Date().getHours() % 12);
+        var nowQuery = (new Date().getHours() % 12); // For fun query to start up with
         if (nowQuery == 0) { nowQuery = 12; }
         return { searchquery: nowQuery + ' O\'clock' }
     },
     created: function() {
-        this.getSearchResult('search', this.searchquery); // This fires initial search for developement
+        this.getSearchResult('search', this.searchquery); // This fires initial search for faster development
     },
 })
 
@@ -23,6 +30,19 @@ Vue.component('search-pager', {
     </div>`
 })
 
+Vue.component('search-top', {
+    props: ['searchResult', 'getTrackData'],
+    template: `<div  class="top">
+        <div class="top-container">
+            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item" v-if="index < 6">
+                <div class="ellipsis text">{{ track.name }}</div>
+                <img :src="track.album.images[1].url" alt="album photo" />
+                <div class="ellipsis text">{{ track.artists[0].name }}</div>
+            </div>
+        </div>
+    </div>`
+})
+
 Vue.component('search-result', {
     props: ['searchResult', 'offset', 'getArtistData', 'getTrackData'],
     template: `<div id="searchresultTable">
@@ -32,8 +52,8 @@ Vue.component('search-result', {
             <tr>
                 <th class="no">No.</th>
                 <th>Track</th>
-                <th>Duration</th>
                 <th>Artist</th>
+                <th>Duration</th>
                 <th>Popularity</th>
             </tr>
         </thead>
@@ -41,8 +61,8 @@ Vue.component('search-result', {
             <tr v-for="(track, index) in searchResult">
                 <td class="no">{{index + 1 + offset}}</td>
                 <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
-                <td>{{track.duration_ms | minutesSeconds }}</td>
                 <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
+                <td>{{track.duration_ms | minutesSeconds }}</td>
                 <td>{{ track.popularity }}%</td>
             </tr>
         <tbody>
@@ -168,7 +188,7 @@ app = new Vue({
         getSearchResult: function(action, param1) {
 
             if (action === 'search') {
-                spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track'
+                spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20'
             }
             if (action === 'paging') {
                 if (param1 === 'next') {
