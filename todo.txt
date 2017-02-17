@@ -1,6 +1,4 @@
 TODOs
 
-Filter gentaget i search result og track modal.
-
 Uhensigstsmæssig billede valg i track modal.
 

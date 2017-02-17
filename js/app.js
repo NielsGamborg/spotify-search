@@ -41,14 +41,6 @@ Vue.component('search-result', {
     </div>`,
     data: function() {
         return { searchquery: '' }
-    },
-    filters: {
-        minutesSeconds: function(value) {
-            if (!value) return '';
-            minutes = Math.floor(value / (1000 * 60));
-            seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
-            return minutes + ':' + seconds;
-        }
     }
 })
 
@@ -65,7 +57,6 @@ Vue.component('search-pager', {
         }
     }
 })
-
 
 Vue.component('artist-modal', {
     props: ['modalData'],
@@ -148,15 +139,14 @@ Vue.component('track-modal', {
                 <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
             </tr>
         </table>
-    </div>`,
-    filters: {
-        minutesSeconds: function(value) {
-            if (!value) return '';
-            minutes = Math.floor(value / (1000 * 60));
-            seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
-            return minutes + ':' + seconds;
-        }
-    }
+    </div>`
+})
+
+Vue.filter('minutesSeconds', function(value) {
+    if (!value) return '';
+    minutes = Math.floor(value / (1000 * 60));
+    seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
+    return minutes + ':' + seconds;
 })
 
 app = new Vue({
