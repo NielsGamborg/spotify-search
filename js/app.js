@@ -254,11 +254,3 @@ app = new Vue({
 
     }
 });
-
-
-Vue.filter('minutesSeconds', function(value) {
-    if (!value) return '';
-    minutes = Math.floor(value / (1000 * 60));
-    seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
-    return minutes + ':' + seconds;
-})
