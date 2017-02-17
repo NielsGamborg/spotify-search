@@ -1,6 +1,5 @@
 body {
     background-color: #112211;
-    ;
     font-family: arial, helvetica, sans-serif;
     margin: 0;
 }
@@ -53,7 +52,7 @@ button {
     border-radius: 3px;
     cursor: pointer;
     font-size: 100%;
-    margin-right: 1em;
+    margin-right: .5em;
     padding: .3em 1em;
 }
 
@@ -65,6 +64,7 @@ button {
     border: 1px solid #999;
     border-radius: 5px;
     box-sizing: border-box;
+    font-size: 1em;
     height: 40px;
     margin-right: .5em;
     padding: .3em .5em;

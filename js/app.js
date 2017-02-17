@@ -1,17 +1,26 @@
 Vue.component('search-box', {
     props: ['getSearchResult'],
     template: `<div id="searchBox">
-        <input  v-on:keyup.enter="callSearch(searchquery)" id="query" v-model="searchquery" type="text">
-        <button id="searchButton" v-on:click="callSearch(searchquery)" >Search</button>
+        <input  v-on:keyup.enter="getSearchResult('search',searchquery)" id="query" v-model="searchquery" :value="searchquery" type="text" autofocus>
+        <button id="searchButton" v-on:click="getSearchResult('search', searchquery)" >Search</button>
     </div>`,
     data: function() {
-        return { searchquery: '' }
+        var nowQuery = (new Date().getHours() % 12);
+        if (nowQuery == 0) { nowQuery = 12; }
+        return { searchquery: nowQuery + ' O\'clock' }
     },
-    methods: {
-        callSearch: function(searchquery) {
-            this.getSearchResult('search', searchquery);
-        }
+    created: function() {
+        this.getSearchResult('search', this.searchquery); // This fires initial search for developement
     }
+})
+
+Vue.component('search-pager', {
+    props: ['total', 'offset', 'getSearchResult'],
+    template: `<div  class="pager" v-show="total > 20">
+        <button class="previous" v-on:click="getSearchResult('paging','previous')">Previous</button>
+        <button class="next" v-on:click="getSearchResult('paging','next')">Next</button>
+        <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total }} results</span>
+    </div>`
 })
 
 Vue.component('search-result', {
@@ -40,23 +49,11 @@ Vue.component('search-result', {
     </table>
     </div>`,
     data: function() {
-        return { searchquery: '' }
+        return {}
     }
 })
 
-Vue.component('search-pager', {
-    props: ['total', 'offset', 'getSearchResult'],
-    template: `<div  class="pager" v-show="total > 20">
-    <button class="previous" v-on:click="callSearch('previous')">Previous</button>
-    <button class="next" v-on:click="callSearch('next')">Next</button>
-    <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total }} results</span>
-    </div>`,
-    methods: {
-        callSearch: function(direction) {
-            this.getSearchResult('paging', direction);
-        }
-    }
-})
+
 
 Vue.component('artist-modal', {
     props: ['modalData'],
