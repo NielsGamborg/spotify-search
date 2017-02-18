@@ -23,13 +23,8 @@ Vue.component('search-box', {
         <input  v-on:keyup.enter="getSearchResult('search',searchquery)" id="query" v-model="searchquery" :value="searchquery" type="text" autofocus>
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)" >Search</button>
     </div>`,
-    data: function() {
-        var nowQuery = (new Date().getHours() % 12); // For fun query to start up with
-        if (nowQuery == 0) { nowQuery = 12; }
-        //return { searchquery: nowQuery + ' O\'clock' }       
-        return { searchquery: 'love ' + nowQuery };
-    },
     created: function() {
+        this.searchquery = sessionStorage.getItem("lastQuery")
         this.getSearchResult('search', this.searchquery); // This fires initial search for faster development
     },
 })
@@ -140,7 +135,7 @@ Vue.component('artist-modal', {
             </tr>
             <tr>
                 <td>Spotify link</td>
-                <td><a href="modalData.external_urls.spotify">{{ modalData.name }}</a></td>
+                <td><a :href="modalData.external_urls.spotify">{{ modalData.name }}</a></td>
             </tr>
         </tbody>
     </table>
@@ -199,6 +194,7 @@ app = new Vue({
         searchResult: {},
         modalData: {
             followers: {},
+            external_urls: {},
             images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering. 
         },
         trackData: {
@@ -215,8 +211,9 @@ app = new Vue({
         getSearchResult: function(action, param1) {
 
             if (action === 'search') {
-                if (param1 === '') { return };
-                spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20'
+                if (param1 === '' || param1 === null) return;
+                spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
+                sessionStorage.setItem("lastQuery", param1);
             }
             if (action === 'paging') {
                 if (param1 === 'next') {

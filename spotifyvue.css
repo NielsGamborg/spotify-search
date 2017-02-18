@@ -9,7 +9,7 @@ body {
     min-height: 800px;
     margin: 0 auto;
     padding: .5em 2em 4em;
-    max-width: 1200px;
+    max-width: 1400px;
 }
 
 h1 {
@@ -60,8 +60,7 @@ button {
 /* Search box */
 
 #searchBox {
-    float: left;
-    margin: 2em 0;
+    margin: 3em 0 4em;
 }
 
 #query {
@@ -98,7 +97,7 @@ button {
     clear: both;
     display: -webkit-flex;
     display: flex;
-    margin-bottom: 1em;
+    margin-bottom: 4em;
     min-height: 170px;
     padding: .5em 0 .3em;
 }
@@ -154,7 +153,7 @@ button {
 
 .pager {
     clear: both;
-    margin: .8em 0 1em;
+    margin: .5em 0;
 }
 
 .link {
