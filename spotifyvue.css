@@ -36,8 +36,8 @@ th {
     padding: .5em 1em;
 }
 
-td.no,
-th.no {
+td.slim,
+th.slim {
     padding: .5em .7em;
     width: 2%;
 }

@@ -1,4 +1,2 @@
 TODOs
 
-Looping i topbar skal fikses
-

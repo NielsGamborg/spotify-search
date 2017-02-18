@@ -27,7 +27,7 @@ Vue.component('search-box', {
         var nowQuery = (new Date().getHours() % 12); // For fun query to start up with
         if (nowQuery == 0) { nowQuery = 12; }
         //return { searchquery: nowQuery + ' O\'clock' }       
-        return { searchquery: 'love' };
+        return { searchquery: 'love ' + nowQuery };
     },
     created: function() {
         this.getSearchResult('search', this.searchquery); // This fires initial search for faster development
@@ -47,13 +47,8 @@ Vue.component('search-top', {
     props: ['searchResult', 'getTrackData', 'offset'],
     template: `<div  class="top" v-if="searchResult.length > 0">
         <div class="top-container">
-            <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div>
-            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item first" v-if="index < 10">
-                <div class="ellipsis text">{{ track.name }}</div>
-                <img :src="track.album.images[1].url" alt="album photo" />
-                <div class="ellipsis text">{{ track.artists[0].name }}</div>
-            </div>
-            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item last" v-if="index >= 10">
+            <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
+            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
                 <div class="ellipsis text">{{ track.name }}</div>
                 <img :src="track.album.images[1].url" alt="album photo" />
                 <div class="ellipsis text">{{ track.artists[0].name }}</div>
@@ -65,10 +60,10 @@ Vue.component('search-top', {
         toggleTop10: function() {
             if ($(".top-item.first").is(":visible")) {
                 $(".top-item.first").fadeOut(100);
-                $(".top-item.last").delay(100).fadeIn(200);
+                $(".top-item.last").delay(100).fadeIn(100);
             } else {
                 $(".top-item.last").fadeOut(100);
-                $(".top-item.first").delay(100).fadeIn(200);
+                $(".top-item.first").delay(100).fadeIn(100);
             }
 
         }
@@ -82,20 +77,20 @@ Vue.component('search-result', {
     <table v-if="searchResult.length > 0">
         <thead>
             <tr>
-                <th class="no">No.</th>
+                <th class="slim">No.</th>
                 <th>Track</th>
                 <th>Artist</th>
-                <th>Duration</th>
-                <th>Popularity</th>
+                <th class="slim">Duration</th>
+                <th class="slim">Popularity</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(track, index) in searchResult">
-                <td class="no">{{index + 1 + offset}}</td>
+                <td class="slim no">{{index + 1 + offset}}</td>
                 <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
                 <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
-                <td>{{track.duration_ms | minutesSeconds }}</td>
-                <td>{{ track.popularity }}%</td>
+                <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
+                <td class="slim">{{ track.popularity }}%</td>
             </tr>
         <tbody>
     </table>
