@@ -98,17 +98,38 @@ button {
     clear: both;
     display: -webkit-flex;
     display: flex;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
+    min-height: 170px;
     padding: .5em 0 .3em;
+}
+
+.top-item.arrow {
+    background: transparent url(gfx/arrow-left.png) no-repeat 0 34px;
+    color: #777;
+    font-size: .8em;
+    height: 120px;
+    margin-right: .2em;
+    padding-top: 14px;
+    min-width: 50px;
+    width: 50px;
+}
+
+.top-item.first.arrow {
+    background: transparent url(gfx/arrow-right.png) no-repeat 10px 34px;
+    margin-right: 0;
 }
 
 .top-item {
     cursor: pointer;
     height: 170px;
-    margin: 0 2em 0 0;
+    margin: 0 1.5em 0 0;
     overflow: hidden;
     width: 20%;
-    min-width: 80px;
+    min-width: 70px;
+}
+
+.top-item.last {
+    display: none;
 }
 
 .top-item img {
@@ -133,7 +154,7 @@ button {
 
 .pager {
     clear: both;
-    margin: .5em 0;
+    margin: .8em 0 1em;
 }
 
 .link {

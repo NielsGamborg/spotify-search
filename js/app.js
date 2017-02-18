@@ -5,6 +5,18 @@ Vue.filter('minutesSeconds', function(value) {
     return minutes + ':' + seconds;
 })
 
+Vue.filter('formatNumbers', function(value) {
+    if (!value) return '';
+    filteredValue = value.toString();
+    if (value > 999 && value < 1000000) {
+        filteredValue = filteredValue.substring(0, filteredValue.length - 3) + '.' + filteredValue.substring(filteredValue.length - 3);
+    }
+    if (value > 1000000) {
+        filteredValue = filteredValue.substring(0, filteredValue.length - 6) + '.' + filteredValue.substring(filteredValue.length - 6, filteredValue.length - 3) + '.' + filteredValue.substring(filteredValue.length - 3);
+    }
+    return filteredValue;
+})
+
 Vue.component('search-box', {
     props: ['getSearchResult'],
     template: `<div id="searchBox">
@@ -14,7 +26,8 @@ Vue.component('search-box', {
     data: function() {
         var nowQuery = (new Date().getHours() % 12); // For fun query to start up with
         if (nowQuery == 0) { nowQuery = 12; }
-        return { searchquery: nowQuery + ' O\'clock' }
+        //return { searchquery: nowQuery + ' O\'clock' }       
+        return { searchquery: 'love' };
     },
     created: function() {
         this.getSearchResult('search', this.searchquery); // This fires initial search for faster development
@@ -26,28 +39,47 @@ Vue.component('search-pager', {
     template: `<div  class="pager" v-show="total > 20">
         <button class="previous" v-on:click="getSearchResult('paging','previous')">Previous</button>
         <button class="next" v-on:click="getSearchResult('paging','next')">Next</button>
-        <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total }} results</span>
+        <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total | formatNumbers }} results</span>
     </div>`
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'getTrackData'],
-    template: `<div  class="top">
+    props: ['searchResult', 'getTrackData', 'offset'],
+    template: `<div  class="top" v-if="searchResult.length > 0">
         <div class="top-container">
-            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item" v-if="index < 6">
+            <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div>
+            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item first" v-if="index < 10">
                 <div class="ellipsis text">{{ track.name }}</div>
                 <img :src="track.album.images[1].url" alt="album photo" />
                 <div class="ellipsis text">{{ track.artists[0].name }}</div>
             </div>
+            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item last" v-if="index >= 10">
+                <div class="ellipsis text">{{ track.name }}</div>
+                <img :src="track.album.images[1].url" alt="album photo" />
+                <div class="ellipsis text">{{ track.artists[0].name }}</div>
+            </div>
+            <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
         </div>
-    </div>`
+    </div>`,
+    methods: {
+        toggleTop10: function() {
+            if ($(".top-item.first").is(":visible")) {
+                $(".top-item.first").fadeOut(100);
+                $(".top-item.last").delay(100).fadeIn(200);
+            } else {
+                $(".top-item.last").fadeOut(100);
+                $(".top-item.first").delay(100).fadeIn(200);
+            }
+
+        }
+    }
 })
 
 Vue.component('search-result', {
     props: ['searchResult', 'offset', 'getArtistData', 'getTrackData'],
     template: `<div id="searchresultTable">
     <p v-if="searchResult.length == 0">No search result</p>
-    <table v-if="searchResult.length>0">
+    <table v-if="searchResult.length > 0">
         <thead>
             <tr>
                 <th class="no">No.</th>
@@ -104,7 +136,7 @@ Vue.component('artist-modal', {
             </tr>
             <tr>
                 <td>Followers</td>
-                <td>{{ modalData.followers.total}}</td>
+                <td>{{ modalData.followers.total | formatNumbers}}</td>
             </tr>
             <tr>
                 <td>Genres</td>
@@ -188,6 +220,7 @@ app = new Vue({
         getSearchResult: function(action, param1) {
 
             if (action === 'search') {
+                if (param1 === '') { return };
                 spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20'
             }
             if (action === 'paging') {
