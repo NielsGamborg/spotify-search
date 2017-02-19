@@ -106,36 +106,36 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['modalData'],
+    props: ['artistData'],
     template: `<div  class="dataModal artist">
     <div class="hidePopUp" onclick="$('.dataModal, #overlay').hide()">×</div>
-    <h2>{{ modalData.name }}</h2>
+    <h2>{{ artistData.name }}</h2>
     <div class="column1">
-    <img :src="modalData.images[1].url" alt="artist photo" />
+    <img :src="artistData.images[1].url" alt="artist photo" />
     </div>
     <table>
         <thead>
             <tr>
-                <th colspan="2">{{ modalData.name }}</th>
+                <th colspan="2">{{ artistData.name }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>Popularity</td>
-                <td>{{ modalData.popularity }}%</td>
+                <td>{{ artistData.popularity }}%</td>
             </tr>
             <tr>
                 <td>Followers</td>
-                <td>{{ modalData.followers.total | formatNumbers}}</td>
+                <td>{{ artistData.followers.total | formatNumbers}}</td>
             </tr>
             <tr>
                 <td>Genres</td>
-                <td><span class="genreTag" v-for="genre in modalData.genres">{{ genre }}, </span>
+                <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
                 </td>
             </tr>
             <tr>
                 <td>Spotify link</td>
-                <td><a :href="modalData.external_urls.spotify">{{ modalData.name }}</a></td>
+                <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
             </tr>
         </tbody>
     </table>
@@ -192,7 +192,7 @@ app = new Vue({
     el: '#main',
     data: {
         searchResult: {},
-        modalData: {
+        artistData: {
             followers: {},
             external_urls: {},
             images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering. 
@@ -255,7 +255,7 @@ app = new Vue({
                 $('#spinner,#overlay').show();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
                 this.$http.get(spotifyUrl).then(response => {
-                    this.modalData = response.body;
+                    this.artistData = response.body;
                     console.log('response.body: ', response.body);
                     $('#spinner').hide();
                     $('.dataModal.artist').show();
