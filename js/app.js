@@ -25,7 +25,7 @@ Vue.component('search-box', {
     </div>`,
     created: function() {
         this.searchquery = sessionStorage.getItem("lastQuery")
-        this.getSearchResult('search', this.searchquery); // This fires initial search for faster development
+        this.getSearchResult('search', this.searchquery); // Search on reload
     },
 })
 
@@ -39,14 +39,14 @@ Vue.component('search-pager', {
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'getTrackData', 'offset'],
+    props: ['searchResult', 'getTrackData', 'getArtistData', 'offset'],
     template: `<div  class="top" v-if="searchResult.length > 0">
         <div class="top-container">
             <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
-            <div v-for="(track, index) in searchResult" v-on:click="getTrackData(track.id)" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
-                <div class="ellipsis text">{{ track.name }}</div>
-                <img :src="track.album.images[1].url" alt="album photo" />
-                <div class="ellipsis text">{{ track.artists[0].name }}</div>
+            <div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
+                <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
             </div>
             <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
         </div>
