@@ -257,19 +257,19 @@ app = new Vue({
 
         getArtistData: function(type, id) {
             if (type === 'artist') {
-                $('#spinner,#overlay').show();
+                this.showSpinner();
+                $('#overlay').show();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
                     console.log('response.body: ', response.body);
-                    $('#spinner').hide();
+                    this.hideSpinner();
                     $('.dataModal.artist').show();
                 }, response => {
                     console.log('error callback', response);
                 });
                 console.log('getArtistData i roden, Type, id ', type, id)
             }
-
         },
 
         getTrackData: function(id) {
