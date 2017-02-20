@@ -253,8 +253,8 @@ app = new Vue({
             }, response => {
                 console.log('error callback', response);
             });
-
         },
+
         getArtistData: function(type, id) {
             if (type === 'artist') {
                 $('#spinner,#overlay').show();
@@ -271,6 +271,7 @@ app = new Vue({
             }
 
         },
+
         getTrackData: function(id) {
             $('#overlay').show();
             for (var i = 0; i < this.searchResult.length; i++) {
@@ -281,12 +282,13 @@ app = new Vue({
             $('.dataModal.track').show();
             console.log('this.trackData ', this.trackData)
         },
+
         showSpinner: function() {
             this.loading = true;
         },
+
         hideSpinner: function() {
             this.loading = false;
         }
-
     }
 });
