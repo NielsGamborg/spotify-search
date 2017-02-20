@@ -189,8 +189,9 @@ Vue.component('track-modal', {
 })
 
 app = new Vue({
-    el: '#main',
+    el: '#wrapper',
     data: {
+        loading: false,
         searchResult: {},
         artistData: {
             followers: {},
@@ -229,7 +230,10 @@ app = new Vue({
                     spotifyUrl = this.previous;
                 }
             }
-            $('#spinner,#overlay').show();
+
+            $('#overlay').show();
+            this.showSpinner();
+
             this.$http.get(spotifyUrl).then(response => {
                 this.searchResult = response.body.tracks.items;
                 this.total = response.body.tracks.total;
@@ -244,7 +248,8 @@ app = new Vue({
                     $('.next').attr('disabled', 'disabled');
                 }
                 console.log('response.body.tracks: ', response.body.tracks.items);
-                $('#spinner,#overlay').hide();
+                this.hideSpinner();  
+                $('#overlay').hide();
             }, response => {
                 console.log('error callback', response);
             });
@@ -275,6 +280,12 @@ app = new Vue({
             }
             $('.dataModal.track').show();
             console.log('this.trackData ', this.trackData)
+        },
+        showSpinner: function() {
+            this.loading = true;
+        },
+        hideSpinner: function() {
+            this.loading = false;
         }
 
     }

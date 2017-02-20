@@ -12,7 +12,7 @@
     <div id="wrapper">
         <h1>Search Spotify with Vue JS</h1>
 
-        <div id="main">
+        <div>
             <search-box :get-search-result="getSearchResult"></search-box>
             <search-top :search-result="searchResult" :get-track-data="getTrackData" :get-artist-data="getArtistData" :offset="offset"></search-top>
             <search-pager :get-search-result="getSearchResult" :total="total" :offset="offset"></search-pager>
@@ -22,11 +22,12 @@
             <track-modal :track-data="trackData"></track-modal>
         </div>
 
+        <div id="spinner" v-if="loading">
+            <div class="closeSpinner" onclick="hideSpinner()">×</div>
+            <div id="spinnerText">Loading...</div>
+        </div>
     </div>
-    <div id="spinner">
-        <div class="closeSpinner" onclick="$('#spinner,#overlay').hide()">×</div>
-        <div id="spinnerText">Loading...</div>
-    </div>
+
     <div id="overlay" class="modalOverlay" onclick="$('#spinner, #overlay, .dataModal').hide()"></div>
 
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
