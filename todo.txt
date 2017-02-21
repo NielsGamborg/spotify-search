@@ -1,3 +1,4 @@
 TODOs
 
-Gammelt billede glimter i artist modal
+- Gammelt billede glimter i artist modal
+- Modals bliver nogle gange cachet meget hårdt
