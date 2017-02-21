@@ -189,8 +189,9 @@ Vue.component('track-modal', {
 })
 
 app = new Vue({
-    el: '#main',
+    el: '#wrapper',
     data: {
+        loading: false,
         searchResult: {},
         artistData: {
             followers: {},
@@ -229,7 +230,10 @@ app = new Vue({
                     spotifyUrl = this.previous;
                 }
             }
-            $('#spinner,#overlay').show();
+
+            $('#overlay').show();
+            this.showSpinner();
+
             this.$http.get(spotifyUrl).then(response => {
                 this.searchResult = response.body.tracks.items;
                 this.total = response.body.tracks.total;
@@ -244,28 +248,30 @@ app = new Vue({
                     $('.next').attr('disabled', 'disabled');
                 }
                 console.log('response.body.tracks: ', response.body.tracks.items);
-                $('#spinner,#overlay').hide();
+                this.hideSpinner();  
+                $('#overlay').hide();
             }, response => {
                 console.log('error callback', response);
             });
-
         },
+
         getArtistData: function(type, id) {
             if (type === 'artist') {
-                $('#spinner,#overlay').show();
+                this.showSpinner();
+                $('#overlay').show();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
                     console.log('response.body: ', response.body);
-                    $('#spinner').hide();
+                    this.hideSpinner();
                     $('.dataModal.artist').show();
                 }, response => {
                     console.log('error callback', response);
                 });
                 console.log('getArtistData i roden, Type, id ', type, id)
             }
-
         },
+
         getTrackData: function(id) {
             $('#overlay').show();
             for (var i = 0; i < this.searchResult.length; i++) {
@@ -275,7 +281,14 @@ app = new Vue({
             }
             $('.dataModal.track').show();
             console.log('this.trackData ', this.trackData)
-        }
+        },
 
+        showSpinner: function() {
+            this.loading = true;
+        },
+
+        hideSpinner: function() {
+            this.loading = false;
+        }
     }
 });

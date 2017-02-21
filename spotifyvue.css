@@ -173,7 +173,6 @@ button {
     background: white url("./gfx/spinner.gif") no-repeat 50% 30%;
     border: 1px solid #999;
     border-radius: 5px;
-    display: none;
     height: 210px;
     left: 50%;
     margin-left: -150px;
@@ -208,7 +207,6 @@ button {
 
 #overlay {
     background: black;
-    display: none;
     opacity: .8;
     position: fixed;
     text-align: center;
