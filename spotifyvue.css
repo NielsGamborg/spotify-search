@@ -224,7 +224,6 @@ button {
     background: black;
     border-radius: 5px;
     color: white;
-    display: none;
     min-height: 300px;
     padding: 2em;
     position: fixed;

@@ -2,4 +2,5 @@ TODOs
 
 - Gammelt billede glimter i artist modal
 - Modals bliver nogle gange cachet meget hårdt
-- Overlay bug fixes og overlay skrives ind i jquery spinner metode
+- Hvis billede mangler crasher appen. Søg feks på "Pete Wingfield"
+- sessionStorage giver crash i IE, derfor udkommenteret

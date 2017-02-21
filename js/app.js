@@ -24,7 +24,8 @@ Vue.component('search-box', {
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)" >Search</button>
     </div>`,
     created: function() {
-        this.searchquery = sessionStorage.getItem("lastQuery")
+        //this.searchquery = window.sessionStorage.lastQuery;
+        this.searchquery = 'love';
         this.getSearchResult('search', this.searchquery); // Search on reload
     },
 })
@@ -106,9 +107,9 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData'],
+    props: ['artistData', 'closeModal'],
     template: `<div  class="dataModal artist">
-    <div class="hidePopUp" onclick="$('.dataModal, #overlay').hide()">×</div>
+    <div class="hidePopUp" v-on:click="closeModal">×</div>
     <h2>{{ artistData.name }}</h2>
     <div class="column1">
     <img :src="artistData.images[1].url" alt="artist photo" />
@@ -143,9 +144,9 @@ Vue.component('artist-modal', {
 })
 
 Vue.component('track-modal', {
-    props: ['trackData'],
+    props: ['trackData', 'closeModal'],
     template: `<div  class="dataModal track">
-    <div class="hidePopUp" onclick="$('.dataModal, #overlay').hide()">×</div>
+    <div class="hidePopUp" v-on:click="closeModal">×</div>
         <h2>{{ trackData.name }}</h2>
         <div class="column1">
             <img :src="trackData.album.images[1].url" alt="album photo" />
@@ -189,17 +190,20 @@ Vue.component('track-modal', {
 })
 
 app = new Vue({
-    el: '#wrapper',
+    el: '#appContainer',
     data: {
         loading: false,
+        modalOverlay: false,
+        modaltrack: false,
+        modalartist: false,
         searchResult: {},
         artistData: {
             followers: {},
             external_urls: {},
-            images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering. 
+            images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering??? 
         },
         trackData: {
-            album: { 'images': ['', ''] }, // images defined because of some kind of vue.js codecheck before rendering. 
+            album: { 'images': ['', ''] }, // images defined because of some kind of vue.js codecheck before rendering??? 
             external_urls: {}
         },
         previous: null,
@@ -214,7 +218,7 @@ app = new Vue({
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
                 spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
-                sessionStorage.setItem("lastQuery", param1);
+                //sessionStorage.setItem("lastQuery", param1);
             }
             if (action === 'paging') {
                 if (param1 === 'next') {
@@ -231,7 +235,6 @@ app = new Vue({
                 }
             }
 
-            $('#overlay').show();
             this.showSpinner();
 
             this.$http.get(spotifyUrl).then(response => {
@@ -248,8 +251,7 @@ app = new Vue({
                     $('.next').attr('disabled', 'disabled');
                 }
                 console.log('response.body.tracks: ', response.body.tracks.items);
-                this.hideSpinner();  
-                $('#overlay').hide();
+                this.hideSpinner();
             }, response => {
                 console.log('error callback', response);
             });
@@ -258,13 +260,13 @@ app = new Vue({
         getArtistData: function(type, id) {
             if (type === 'artist') {
                 this.showSpinner();
-                $('#overlay').show();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
                     console.log('response.body: ', response.body);
-                    this.hideSpinner();
-                    $('.dataModal.artist').show();
+                    this.hideSpinner('modal');
+                    //$('.dataModal.artist').show();
+                    this.showModal('artist');
                 }, response => {
                     console.log('error callback', response);
                 });
@@ -273,22 +275,38 @@ app = new Vue({
         },
 
         getTrackData: function(id) {
-            $('#overlay').show();
             for (var i = 0; i < this.searchResult.length; i++) {
                 if (this.searchResult[i].id == id) {
                     this.trackData = this.searchResult[i];
                 }
             }
-            $('.dataModal.track').show();
-            console.log('this.trackData ', this.trackData)
+            this.hideSpinner('modal');
+            this.showModal('track');
         },
 
         showSpinner: function() {
             this.loading = true;
+            console.log('modalOverlay1 ', this.modalOverlay)
         },
 
-        hideSpinner: function() {
+        hideSpinner: function(type) {
             this.loading = false;
+            console.log('modalOverlay2 ', this.modalOverlay)
+            if (type == "modal") {
+                this.modalOverlay = true;
+                console.log('modalOverlay3 ', this.modalOverlay)
+            }
+        },
+
+        showModal: function(type) {
+            if (type == "track") { this.modaltrack = true };
+            if (type == "artist") { this.modalartist = true };
+        },
+
+        closeModal: function() {
+            this.modalOverlay = false;
+            this.modaltrack = false;
+            this.modalartist = false;
         }
     }
 });
