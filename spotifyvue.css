@@ -56,6 +56,11 @@ button {
     padding: .3em 1em;
 }
 
+button:disabled {
+    cursor: default;
+    opacity: .7;
+}
+
 
 /* Search box */
 
@@ -299,4 +304,20 @@ button {
     background-color: #1ed760;
     -webkit-transform: scale(1.03);
     transform: scale(1.03);
+}
+
+
+/* Vue transition */
+
+.fade-enter-active {
+    transition: opacity .4s
+}
+
+.fade-leave-active {
+    transition: opacity .2s
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0
 }

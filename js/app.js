@@ -31,36 +31,45 @@ Vue.component('search-box', {
 })
 
 Vue.component('search-pager', {
-    props: ['total', 'offset', 'getSearchResult'],
+    props: ['total', 'offset', 'getSearchResult', 'disabledPrev', 'disabledNext'],
     template: `<div  class="pager" v-show="total > 20">
-        <button class="previous" v-on:click="getSearchResult('paging','previous')">Previous</button>
-        <button class="next" v-on:click="getSearchResult('paging','next')">Next</button>
+        <button class="previous" :disabled="disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
+        <button class="next" :disabled="disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
         <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total | formatNumbers }} results</span>
     </div>`
 })
 
 Vue.component('search-top', {
     props: ['searchResult', 'getTrackData', 'getArtistData', 'offset'],
-    template: `<div  class="top" v-if="searchResult.length > 0">
+    template: `<transition name="fade"><div  class="top" v-if="searchResult.length > 0">
         <div class="top-container">
             <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
-            <div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
+            <!--<div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
                 <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
                 <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
                 <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
             </div>
+            -->
+            <template v-for="(track, index) in searchResult">
+                <div class="top-item" v-if="index < 10">
+                    <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                    <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                    <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                </div>
+            </template>
             <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
         </div>
-    </div>`,
+    </div></transition>`,
     methods: {
         toggleTop10: function() {
-            if ($(".top-item.first").is(":visible")) {
-                $(".top-item.first").fadeOut(100);
-                $(".top-item.last").delay(100).fadeIn(100);
-            } else {
-                $(".top-item.last").fadeOut(100);
-                $(".top-item.first").delay(100).fadeIn(100);
-            }
+            /*
+                        if ($(".top-item.first").is(":visible")) {
+                            $(".top-item.first").fadeOut(100);
+                            $(".top-item.last").delay(100).fadeIn(100);
+                        } else {
+                            $(".top-item.last").fadeOut(100);
+                            $(".top-item.first").delay(100).fadeIn(100);
+                        }*/
 
         }
     }
@@ -91,24 +100,12 @@ Vue.component('search-result', {
         <tbody>
     </table>
     </div>`,
-    data: function() {
-        return {}
-    },
-    /* experimenting with sorting
-        computed: {
-            orderedsearchResult: function() {
-                return _.orderBy(this.searchResult, 'popularity')
-            }
-        },*/
-    created: function() {
-        //console.log('orderedsearchResult', this.orderedsearchResult)
-    },
 })
 
 
 Vue.component('artist-modal', {
     props: ['artistData', 'closeModal'],
-    template: `<div  class="dataModal artist">
+    template: `<transition name="fade"><div  class="dataModal artist">
     <div class="hidePopUp" v-on:click="closeModal">×</div>
     <h2>{{ artistData.name }}</h2>
     <div class="column1">
@@ -140,12 +137,12 @@ Vue.component('artist-modal', {
             </tr>
         </tbody>
     </table>
-    </div>`
+    </div></transition>`
 })
 
 Vue.component('track-modal', {
     props: ['trackData', 'closeModal'],
-    template: `<div  class="dataModal track">
+    template: `<transition name="fade"><div  class="dataModal track">
     <div class="hidePopUp" v-on:click="closeModal">×</div>
         <h2>{{ trackData.name }}</h2>
         <div class="column1">
@@ -186,7 +183,7 @@ Vue.component('track-modal', {
                 <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
             </tr>
         </table>
-    </div>`
+    </div></transition>`
 })
 
 app = new Vue({
@@ -196,16 +193,11 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
+        disabledPrev: false,
+        disabledNext: false,
         searchResult: {},
-        artistData: {
-            followers: {},
-            external_urls: {},
-            images: ['', ''] // images defined because of some kind of vue.js codecheck before rendering??? 
-        },
-        trackData: {
-            album: { 'images': ['', ''] }, // images defined because of some kind of vue.js codecheck before rendering??? 
-            external_urls: {}
-        },
+        artistData: null,
+        trackData: null,
         previous: null,
         next: null,
         total: 0,
@@ -243,12 +235,13 @@ app = new Vue({
                 this.offset = response.body.tracks.offset;
                 this.previous = response.body.tracks.previous;
                 this.next = response.body.tracks.next;
-                $('.previous,.next').removeAttr('disabled');
+                this.disabledPrev = false;
+                this.disabledNext = false;
                 if (!this.previous) {
-                    $('.previous').attr('disabled', 'disabled');
+                    this.disabledPrev = true;
                 }
                 if (!this.next) {
-                    $('.next').attr('disabled', 'disabled');
+                    this.disabledNext = true;
                 }
                 console.log('response.body.tracks: ', response.body.tracks.items);
                 this.hideSpinner();
@@ -265,7 +258,6 @@ app = new Vue({
                     this.artistData = response.body;
                     console.log('response.body: ', response.body);
                     this.hideSpinner('modal');
-                    //$('.dataModal.artist').show();
                     this.showModal('artist');
                 }, response => {
                     console.log('error callback', response);

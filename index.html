@@ -16,9 +16,9 @@
             <div>
                 <search-box :get-search-result="getSearchResult"></search-box>
                 <search-top :search-result="searchResult" :get-track-data="getTrackData" :get-artist-data="getArtistData" :offset="offset"></search-top>
-                <search-pager :get-search-result="getSearchResult" :total="total" :offset="offset"></search-pager>
+                <search-pager :get-search-result="getSearchResult" :total="total" :offset="offset" :disabled-prev="disabledPrev" :disabled-next="disabledNext"></search-pager>
                 <search-result :search-result="searchResult" :get-artist-data="getArtistData" :get-track-data="getTrackData" :offset="offset"></search-result>
-                <search-pager :get-search-result="getSearchResult" :total="total" :offset="offset"></search-pager>
+                <search-pager :get-search-result="getSearchResult" :total="total" :offset="offset" :disabled-prev="disabledPrev" :disabled-next="disabledNext"></search-pager>
                 <artist-modal v-if="modalartist" :artist-data="artistData" :close-modal="closeModal"></artist-modal>
                 <track-modal v-if="modaltrack" :track-data="trackData" :close-modal="closeModal"></track-modal>
             </div>
