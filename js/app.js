@@ -19,15 +19,26 @@ Vue.filter('formatNumbers', function(value) {
 
 Vue.component('search-box', {
     props: ['getSearchResult'],
-    template: `<div id="searchBox">
-        <input  v-on:keyup.enter="getSearchResult('search',searchquery)" id="query" v-model="searchquery" :value="searchquery" type="text" autofocus>
-        <button id="searchButton" v-on:click="getSearchResult('search', searchquery)" >Search</button>
+    template: `
+    <div id="searchBox">
+        <input id="query" type="text" autofocus>
+        <button id="searchButton" v-on:click="getSearchResult('search', searchquery)">Search</button>
     </div>`,
     created: function() {
         //this.searchquery = window.sessionStorage.lastQuery;
         this.searchquery = 'love';
         this.getSearchResult('search', this.searchquery); // Search on reload
     },
+    subscriptions () {
+        return {
+            // Dette er en observable som fyrer på keyup fra #query-elementet.
+            inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
+                .debounce(300)                                          // Vent til der ikke er tastet i 300ms
+                .distinctUntilChanged()                                 // Fyr kun hvis værdien har ændret sig
+                .filter(query => query)                                 // Filtrer tomme værdier fra.
+                .do(query => this.getSearchResult('search', query))     // Fyr søgningen.
+        }
+    }
 })
 
 Vue.component('search-pager', {
@@ -188,6 +199,8 @@ Vue.component('track-modal', {
         </table>
     </div>`
 })
+
+Vue.use(VueRx, Rx);
 
 app = new Vue({
     el: '#appContainer',
