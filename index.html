@@ -6,6 +6,13 @@
     <meta charset="utf-8" />
     <link type="text/css" href="spotifyvue.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-resource@1.2.0/dist/vue-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/Reactive-Extensions/RxJS/master/dist/rx.lite.js"></script>
+    <script src="https://cdn.rawgit.com/vuejs/vue-rx/aba16a21/vue-rx.js"></script>
 </head>
 
 <body>
@@ -31,9 +38,6 @@
 
         <div id="overlay" v-if="loading || modalOverlay" v-on:click="closeModal"></div>
     </div>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/vue-resource@1.2.0/dist/vue-resource.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
     <script src="js/app.js"></script>
 </body>
 
