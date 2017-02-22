@@ -30,7 +30,7 @@ Vue.component('search-box', {
             inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
                 .debounce(300)                                          // Vent til der ikke er tastet i 300ms
                 .distinctUntilChanged()                                 // Fyr kun hvis værdien har ændret sig
-                .filter(query => query)                                 // Filtrer tomme værdier fra.
+                .filter(query => query.length > 0)                      // Filtrer tomme værdier fra.
                 .startWith('love')                                      // Start med søgningen 'love'
                 .do(query => this.getSearchResult('search', query))     // Fyr søgningen.
         }
