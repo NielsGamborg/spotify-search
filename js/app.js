@@ -55,20 +55,18 @@ Vue.component('search-top', {
             <div class="top-container">
                 <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
                 <template v-for="(track, index) in searchResult">
-                <transition name="fadeSlide">
-                    <div class="top-item" v-if="first && index < 10">
-                        <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                        <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                        <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
-                    </div>
-                </transition>    
-                <transition name="fadeSlide">
-                    <div class="top-item" v-if="!first && index >= 10">
-                        <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                        <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                        <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
-                    </div>
-                </transition>    
+                    <transition name="fadeSlide">
+                        <div class="top-item" v-if="first && index < 10">
+                            <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                            <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                            <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                        </div>
+                        <div class="top-item" v-if="!first && index >= 10">
+                            <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                            <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                            <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                        </div>
+                    </transition>    
                 </template>
                 <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
             </div>
