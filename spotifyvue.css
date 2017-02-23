@@ -119,7 +119,7 @@ button:disabled {
     width: 60px;
 }
 
-.top-item.first.arrow {
+.top-item.last.arrow {
     background: transparent url(gfx/arrow-right.png) no-repeat 10px 34px;
     margin-right: 0;
 }
@@ -131,10 +131,6 @@ button:disabled {
     overflow: hidden;
     width: 10%;
     min-width: 70px;
-}
-
-.top-item.last {
-    display: none;
 }
 
 .top-item img {
@@ -308,9 +304,10 @@ button:disabled {
 }
 
 
-/* Vue transition */
+/* Vue transitions */
 
-.fade-enter-active {
+.fade-enter-active,
+.fadeSlide-enter-active {
     transition: opacity .4s
 }
 
@@ -319,6 +316,12 @@ button:disabled {
 }
 
 .fade-enter,
-.fade-leave-to {
+.fade-leave-to,
+.fadeSlide-enter,
+.fadeSlide-leave-to {
     opacity: 0
+}
+
+.fadeSlide-leave-active {
+    transition: opacity .0s
 }

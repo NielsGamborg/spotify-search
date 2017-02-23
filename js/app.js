@@ -1,11 +1,11 @@
-Vue.filter('minutesSeconds', function (value) {
+Vue.filter('minutesSeconds', function(value) {
     if (!value) return '';
     minutes = Math.floor(value / (1000 * 60));
     seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
     return minutes + ':' + seconds;
 })
 
-Vue.filter('formatNumbers', function (value) {
+Vue.filter('formatNumbers', function(value) {
     if (!value) return '';
     filteredValue = value.toString();
     if (value > 999 && value < 1000000) {
@@ -28,11 +28,11 @@ Vue.component('search-box', {
         return {
             // Dette er en observable som fyrer på keyup fra #query-elementet.
             inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
-                .debounce(300)                                          // Vent til der ikke er tastet i 300ms
-                .distinctUntilChanged()                                 // Fyr kun hvis værdien har ændret sig
-                .filter(query => query.length > 0)                      // Filtrer tomme værdier fra.
-                .startWith('love')                                      // Start med søgningen 'love'
-                .do(query => this.getSearchResult('search', query))     // Fyr søgningen.
+                .debounce(300) // Vent til der ikke er tastet i 300ms
+                .distinctUntilChanged() // Fyr kun hvis værdien har ændret sig
+                .filter(query => query.length > 0) // Filtrer tomme værdier fra.
+                .startWith('love') // Start med søgningen 'love'
+                .do(query => this.getSearchResult('search', query)) // Fyr søgningen.
         }
     }
 })
@@ -50,39 +50,32 @@ Vue.component('search-pager', {
 Vue.component('search-top', {
     props: ['searchResult', 'getTrackData', 'getArtistData', 'offset'],
     template: `
-    <transition name="fade">
+    
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
-                <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
-                <!--<div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
-                    <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                    <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                    <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
-                </div>
-                -->
+                <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
                 <template v-for="(track, index) in searchResult">
-                    <div class="top-item" v-if="index < 10">
+                <transition name="fadeSlide">
+                    <div class="top-item" v-if="first && index < 10">
                         <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
                         <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
                         <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
                     </div>
+                </transition>    
+                <transition name="fadeSlide">
+                    <div class="top-item" v-if="!first && index >= 10">
+                        <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                        <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                        <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                    </div>
+                </transition>    
                 </template>
-                <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
+                <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
             </div>
         </div>
-    </transition>`,
-    methods: {
-        toggleTop10: function () {
-            /*
-                        if ($(".top-item.first").is(":visible")) {
-                            $(".top-item.first").fadeOut(100);
-                            $(".top-item.last").delay(100).fadeIn(100);
-                        } else {
-                            $(".top-item.last").fadeOut(100);
-                            $(".top-item.first").delay(100).fadeIn(100);
-                        }*/
-
-        }
+    `,
+    data: function() {
+        return { first: true };
     }
 })
 
@@ -224,7 +217,7 @@ app = new Vue({
     },
     components: {},
     methods: {
-        getSearchResult: function (action, param1) {
+        getSearchResult: function(action, param1) {
 
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
@@ -276,7 +269,7 @@ app = new Vue({
             });
         },
 
-        sortResult: function (property) {
+        sortResult: function(property) {
             if (this.property == property) {
                 sortOrderBool = !sortOrderBool;
             } else {
@@ -291,7 +284,7 @@ app = new Vue({
             this.searchResult = _.orderBy(this.searchResult, property, sortOrder);
         },
 
-        getArtistData: function (type, id) {
+        getArtistData: function(type, id) {
             if (type === 'artist') {
                 this.showSpinner();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
@@ -307,7 +300,7 @@ app = new Vue({
             }
         },
 
-        getTrackData: function (id) {
+        getTrackData: function(id) {
             for (var i = 0; i < this.searchResult.length; i++) {
                 if (this.searchResult[i].id == id) {
                     this.trackData = this.searchResult[i];
@@ -317,23 +310,23 @@ app = new Vue({
             this.showModal('track');
         },
 
-        showSpinner: function () {
+        showSpinner: function() {
             this.loading = true;
         },
 
-        hideSpinner: function (type) {
+        hideSpinner: function(type) {
             this.loading = false;
             if (type == "modal") {
                 this.modalOverlay = true;
             }
         },
 
-        showModal: function (type) {
+        showModal: function(type) {
             if (type == "track") { this.modaltrack = true };
             if (type == "artist") { this.modalartist = true };
         },
 
-        closeModal: function () {
+        closeModal: function() {
             this.modalOverlay = false;
             this.modaltrack = false;
             this.modalartist = false;
