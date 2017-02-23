@@ -1,11 +1,11 @@
-Vue.filter('minutesSeconds', function(value) {
+Vue.filter('minutesSeconds', function (value) {
     if (!value) return '';
     minutes = Math.floor(value / (1000 * 60));
     seconds = ('00' + Math.floor((value / 1000) % 60)).slice(-2);
     return minutes + ':' + seconds;
 })
 
-Vue.filter('formatNumbers', function(value) {
+Vue.filter('formatNumbers', function (value) {
     if (!value) return '';
     filteredValue = value.toString();
     if (value > 999 && value < 1000000) {
@@ -24,7 +24,7 @@ Vue.component('search-box', {
         <input id="query" type="text" value="love" autofocus>
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)">Search</button>
     </div>`,
-    subscriptions () {
+    subscriptions() {
         return {
             // Dette er en observable som fyrer på keyup fra #query-elementet.
             inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
@@ -68,7 +68,7 @@ Vue.component('search-top', {
         </div>
     </div></transition>`,
     methods: {
-        toggleTop10: function() {
+        toggleTop10: function () {
             /*
                         if ($(".top-item.first").is(":visible")) {
                             $(".top-item.first").fadeOut(100);
@@ -83,22 +83,22 @@ Vue.component('search-top', {
 })
 
 Vue.component('search-result', {
-    props: ['searchResult', 'offset', 'getArtistData', 'getTrackData'],
+    props: ['searchResult', 'sortResult', 'offset', 'getArtistData', 'getTrackData'],
     template: `<div id="searchresultTable">
     <p v-if="searchResult.length == 0">No search result</p>
     <table v-if="searchResult.length > 0">
         <thead>
             <tr>
-                <th class="slim">No.</th>
-                <th>Track</th>
-                <th>Artist</th>
-                <th class="slim">Duration</th>
-                <th class="slim">Popularity</th>
+                <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
+                <th v-on:click="sortResult('name')">Track</th>
+                <th v-on:click="sortResult('artists[0].name')">Artist</th>
+                <th v-on:click="sortResult('duration_ms')" class="slim">Duration</th>
+                <th v-on:click="sortResult('popularity')" class="slim">Popularity</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(track, index) in searchResult">
-                <td class="slim no">{{index + 1 + offset}}</td>
+            <tr v-for="track in searchResult">
+                <td class="slim no">{{track.staticIndex + 1 + offset}}</td>
                 <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
                 <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
                 <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
@@ -214,7 +214,7 @@ app = new Vue({
     },
     components: {},
     methods: {
-        getSearchResult: function(action, param1) {
+        getSearchResult: function (action, param1) {
 
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
@@ -239,7 +239,13 @@ app = new Vue({
             this.showSpinner();
 
             this.$http.get(spotifyUrl).then(response => {
-                this.searchResult = response.body.tracks.items;
+                searchResultTemp = response.body.tracks.items;
+                this.searchResult = [];
+                for (var i = 0; i < searchResultTemp.length; i++) { // adding a static number to make search result sortable on number
+                    tempObj = _.merge(searchResultTemp[i], { staticIndex: i });
+                    this.searchResult.push(tempObj);
+                }
+
                 this.total = response.body.tracks.total;
                 this.offset = response.body.tracks.offset;
                 this.previous = response.body.tracks.previous;
@@ -253,13 +259,29 @@ app = new Vue({
                     this.disabledNext = true;
                 }
                 console.log('response.body.tracks: ', response.body.tracks.items);
+                console.log('this.searchResult: ', this.searchResult);
                 this.hideSpinner();
             }, response => {
                 console.log('error callback', response);
             });
         },
 
-        getArtistData: function(type, id) {
+        sortResult: function (property) {
+            if (this.property == property) {
+                sortOrderBool = !sortOrderBool;
+            } else {
+                sortOrderBool = true;
+            }
+            if (sortOrderBool) {
+                sortOrder = 'asc';
+            } else {
+                sortOrder = 'desc';
+            }
+            this.property = property;
+            this.searchResult = _.orderBy(this.searchResult, property, sortOrder);
+        },
+
+        getArtistData: function (type, id) {
             if (type === 'artist') {
                 this.showSpinner();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
@@ -275,7 +297,7 @@ app = new Vue({
             }
         },
 
-        getTrackData: function(id) {
+        getTrackData: function (id) {
             for (var i = 0; i < this.searchResult.length; i++) {
                 if (this.searchResult[i].id == id) {
                     this.trackData = this.searchResult[i];
@@ -285,26 +307,23 @@ app = new Vue({
             this.showModal('track');
         },
 
-        showSpinner: function() {
+        showSpinner: function () {
             this.loading = true;
-            console.log('modalOverlay1 ', this.modalOverlay)
         },
 
-        hideSpinner: function(type) {
+        hideSpinner: function (type) {
             this.loading = false;
-            console.log('modalOverlay2 ', this.modalOverlay)
             if (type == "modal") {
                 this.modalOverlay = true;
-                console.log('modalOverlay3 ', this.modalOverlay)
             }
         },
 
-        showModal: function(type) {
+        showModal: function (type) {
             if (type == "track") { this.modaltrack = true };
             if (type == "artist") { this.modalartist = true };
         },
 
-        closeModal: function() {
+        closeModal: function () {
             this.modalOverlay = false;
             this.modaltrack = false;
             this.modalartist = false;

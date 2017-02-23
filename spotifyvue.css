@@ -28,6 +28,7 @@ table {
 th {
     background-color: #006622;
     color: white;
+    cursor: pointer;
 }
 
 td,
@@ -128,7 +129,7 @@ button:disabled {
     height: 170px;
     margin: 0 1.5em 0 0;
     overflow: hidden;
-    width: 20%;
+    width: 10%;
     min-width: 70px;
 }
 
