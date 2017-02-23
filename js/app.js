@@ -24,7 +24,7 @@ Vue.component('search-box', {
         <input id="query" type="text" value="love" autofocus>
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)">Search</button>
     </div>`,
-    subscriptions() {
+    subscriptions: function() {
         return {
             // Dette er en observable som fyrer på keyup fra #query-elementet.
             inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
@@ -39,7 +39,8 @@ Vue.component('search-box', {
 
 Vue.component('search-pager', {
     props: ['total', 'offset', 'getSearchResult', 'disabledPrev', 'disabledNext'],
-    template: `<div  class="pager" v-show="total > 20">
+    template: `
+    <div  class="pager" v-show="total > 20">
         <button class="previous" :disabled="disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
         <button class="next" :disabled="disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
         <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total | formatNumbers }} results</span>
@@ -48,25 +49,28 @@ Vue.component('search-pager', {
 
 Vue.component('search-top', {
     props: ['searchResult', 'getTrackData', 'getArtistData', 'offset'],
-    template: `<transition name="fade"><div  class="top" v-if="searchResult.length > 0">
-        <div class="top-container">
-            <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
-            <!--<div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
-                <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
-            </div>
-            -->
-            <template v-for="(track, index) in searchResult">
-                <div class="top-item" v-if="index < 10">
+    template: `
+    <transition name="fade">
+        <div  class="top" v-if="searchResult.length > 0">
+            <div class="top-container">
+                <div v-on:click="toggleTop10()" class="top-item last arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
+                <!--<div v-for="(track, index) in searchResult" class="top-item" v-bind:class="{ first: index < 10, last: index >= 10 }" >
                     <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
                     <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
                     <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
                 </div>
-            </template>
-            <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
+                -->
+                <template v-for="(track, index) in searchResult">
+                    <div class="top-item" v-if="index < 10">
+                        <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
+                        <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
+                        <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                    </div>
+                </template>
+                <div v-on:click="toggleTop10()" class="top-item first arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
+            </div>
         </div>
-    </div></transition>`,
+    </transition>`,
     methods: {
         toggleTop10: function () {
             /*
@@ -84,113 +88,119 @@ Vue.component('search-top', {
 
 Vue.component('search-result', {
     props: ['searchResult', 'sortResult', 'offset', 'getArtistData', 'getTrackData'],
-    template: `<div id="searchresultTable">
-    <p v-if="searchResult.length == 0">No search result</p>
-    <table v-if="searchResult.length > 0">
-        <thead>
-            <tr>
-                <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
-                <th v-on:click="sortResult('name')">Track</th>
-                <th v-on:click="sortResult('artists[0].name')">Artist</th>
-                <th v-on:click="sortResult('duration_ms')" class="slim">Duration</th>
-                <th v-on:click="sortResult('popularity')" class="slim">Popularity</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="track in searchResult">
-                <td class="slim no">{{track.staticIndex + 1 + offset}}</td>
-                <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
-                <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
-                <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
-                <td class="slim">{{ track.popularity }}%</td>
-            </tr>
-        <tbody>
-    </table>
+    template: `
+    <div id="searchresultTable">
+        <p v-if="searchResult.length == 0">No search result</p>
+        <table v-if="searchResult.length > 0">
+            <thead>
+                <tr>
+                    <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
+                    <th v-on:click="sortResult('name')">Track</th>
+                    <th v-on:click="sortResult('artists[0].name')">Artist</th>
+                    <th v-on:click="sortResult('duration_ms')" class="slim">Duration</th>
+                    <th v-on:click="sortResult('popularity')" class="slim">Popularity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="track in searchResult">
+                    <td class="slim no">{{track.staticIndex + 1 + offset}}</td>
+                    <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
+                    <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
+                    <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
+                    <td class="slim">{{ track.popularity }}%</td>
+                </tr>
+            <tbody>
+        </table>
     </div>`,
 })
 
 
 Vue.component('artist-modal', {
     props: ['artistData', 'closeModal'],
-    template: `<transition name="fade"><div  class="dataModal artist">
-    <div class="hidePopUp" v-on:click="closeModal">×</div>
-    <h2>{{ artistData.name }}</h2>
-    <div class="column1">
-    <img :src="artistData.images[1].url" alt="artist photo" />
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th colspan="2">{{ artistData.name }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Popularity</td>
-                <td>{{ artistData.popularity }}%</td>
-            </tr>
-            <tr>
-                <td>Followers</td>
-                <td>{{ artistData.followers.total | formatNumbers}}</td>
-            </tr>
-            <tr>
-                <td>Genres</td>
-                <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
-                </td>
-            </tr>
-            <tr>
-                <td>Spotify link</td>
-                <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
-            </tr>
-        </tbody>
-    </table>
-    </div></transition>`
+    template: `
+    <transition name="fade"><div  class="dataModal artist">
+        <div class="hidePopUp" v-on:click="closeModal">×</div>
+        <h2>{{ artistData.name }}</h2>
+        <div class="column1">
+            <img :src="artistData.images[1].url" alt="artist photo" />
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="2">{{ artistData.name }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Popularity</td>
+                    <td>{{ artistData.popularity }}%</td>
+                </tr>
+                <tr>
+                    <td>Followers</td>
+                    <td>{{ artistData.followers.total | formatNumbers}}</td>
+                </tr>
+                <tr>
+                    <td>Genres</td>
+                    <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Spotify link</td>
+                    <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </transition>`
 })
 
 Vue.component('track-modal', {
     props: ['trackData', 'closeModal'],
-    template: `<transition name="fade"><div  class="dataModal track">
-    <div class="hidePopUp" v-on:click="closeModal">×</div>
-        <h2>{{ trackData.name }}</h2>
-        <div class="column1">
-            <img :src="trackData.album.images[1].url" alt="album photo" />
-            <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }}, </p>           
-            <p>Album: {{ trackData.album.name }}</p>
-            <p>
-                <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
-            </p>
-        </div> 
-        <table>
-            <thead>
+    template: `
+    <transition name="fade">
+        <div  class="dataModal track">
+        <div class="hidePopUp" v-on:click="closeModal">×</div>
+            <h2>{{ trackData.name }}</h2>
+            <div class="column1">
+                <img :src="trackData.album.images[1].url" alt="album photo" />
+                <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }}, </p>           
+                <p>Album: {{ trackData.album.name }}</p>
+                <p>
+                    <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
+                </p>
+            </div> 
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">{{ trackData.name }}</th>
+                    </tr>
+                </thead>
                 <tr>
-                    <th colspan="2">{{ trackData.name }}</th>
+                    <td>Popularity</td>
+                    <td>{{trackData.popularity }}%</td>
                 </tr>
-            </thead>
-            <tr>
-                <td>Popularity</td>
-                <td>{{trackData.popularity }}%</td>
-            </tr>
-            <tr>
-                <td>Duration</td>
-                <td>{{trackData.duration_ms | minutesSeconds }}</td>
-            </tr>
-            </tr>
-            <tr>
-                <td>Album</td>
-                <td>{{trackData.album.name }}</td>
-            </tr>
-            </tr>
-            <tr>
-                <td>Track number</td>
-                <td>{{trackData.track_number }}</td>
-            </tr>
-            </tr>
-            <tr>
-                <td>Explicit</td>
-                <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
-            </tr>
-        </table>
-    </div></transition>`
+                <tr>
+                    <td>Duration</td>
+                    <td>{{trackData.duration_ms | minutesSeconds }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>Album</td>
+                    <td>{{trackData.album.name }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>Track number</td>
+                    <td>{{trackData.track_number }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <td>Explicit</td>
+                    <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
+                </tr>
+            </table>
+        </div>
+    </transition>`
 })
 
 Vue.use(VueRx, Rx);
