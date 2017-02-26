@@ -145,7 +145,7 @@ Vue.component('search-result', {
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
                     <td v-on:click="getTrackData(item.id)" class="link">{{item.name}}</td>
                     <td><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
-                    <td class="slim">{{ item.followers.total | formatNumbers }}</td>
+                    <td v-if="item.followers" class="slim">{{ item.followers.total | formatNumbers }}</td>
                 </tr>
             </tbody>
         </table>
@@ -250,9 +250,7 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
-        searchResult: {
-            images: []
-        },
+        searchResult: {},
         searchMetaData: {},
         artistData: null,
         trackData: null,
@@ -291,7 +289,6 @@ app = new Vue({
             this.$http.get(spotifyUrl).then(response => {
 
                 /* Search result */
-                console.log('response.body: ', response.body)
                 if (this.searchType == 'tracks') {
                     searchResultTemp = response.body.tracks;
                 } else {
@@ -320,9 +317,8 @@ app = new Vue({
                 }
 
                 console.log('response.body: ', response.body);
-                console.log('searchMetaData: ', this.searchMetaData);
+                //console.log('searchMetaData: ', this.searchMetaData);
                 console.log('this.searchResult: ', this.searchResult);
-                console.log('this.searchType: ', this.searchType);
                 this.hideSpinner();
             }, response => {
                 console.log('error callback', response);
@@ -350,7 +346,6 @@ app = new Vue({
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
-                    console.log('response.body: ', response.body);
                     this.hideSpinner('modal');
                     this.showModal('artist');
                 }, response => {

@@ -2,4 +2,4 @@ TODOs
 
 
 - Bladre pile i top result skal skjules hvis man ikke kan bladre mere
-- Konsol fejl ved bladring mlm artist og tracks pga udefinerede object properties
+- Konsol fejl ved bladring mlm artist og tracks pga udefinerede object properties f.eks. søgning på : "john moge*" og så search type toggle
