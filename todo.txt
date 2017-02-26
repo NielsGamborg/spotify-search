@@ -1,6 +1,5 @@
 TODOs
 
-- Gammelt billede glimter i artist modal
-- Modals bliver nogle gange cachet meget hårdt
-- Hvis billede mangler crasher appen. Søg feks på "Pete Wingfield"
-- sessionStorage giver crash i IE, derfor udkommenteret
+
+- Bladre pile i top result skal skjules hvis man ikke kan bladre mere
+- Konsol fejl ved bladring mlm artist og tracks pga udefinerede object properties

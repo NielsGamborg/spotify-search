@@ -21,9 +21,20 @@ Vue.component('search-box', {
     props: ['getSearchResult'],
     template: `
     <div id="searchBox">
-        <input id="query" type="text" :value="searchquery" autofocus>
+        <input id="query" type="text" v-model="searchquery" :value="searchquery" autofocus>
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)">Search</button>
+        <div id="searchChoiceContainer">
+            <input v-on:change="getSearchResult('search', searchquery, searchType)" v-model="searchType" name="searchT" type="radio" value="tracks" id="srchTrck">
+            <label for="srchTrck">Tracks</label> 
+            <input v-on:change="getSearchResult('search', searchquery, searchType)" v-model="searchType" name="searchT" type="radio" value="artists"  id="srchArt">
+            <label for="srchArt">Artists</label>
+        </div>    
     </div>`,
+    data: function() {
+        return {
+            searchType: "tracks"
+        }
+    },
     created: function() {
         this.searchquery = sessionStorage.getItem("lastQuery");
     },
@@ -51,29 +62,44 @@ Vue.component('search-pager', {
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData'],
+    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType'],
     template: `
-    
+    <div>
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
                 <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
-                <template v-for="(track, index) in searchResult">
+                <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult" v-on:load="first = true">
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="first && index < 10">
-                            <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                            <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                            <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                            <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
+                            <img v-on:click="getTrackData(item.id)" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData('artist', item.artists[0].id)" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                         <div class="top-item" v-if="!first && index >= 10">
-                            <div v-on:click="getTrackData(track.id)" class="ellipsis text">{{ track.name }}</div>
-                            <img v-on:click="getTrackData(track.id)" :src="track.album.images[1].url" alt="album photo" />
-                            <div v-on:click="getArtistData('artist', track.artists[0].id)" class="ellipsis text">{{ track.artists[0].name }}</div>
+                            <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
+                            <img v-on:click="getTrackData(item.id)" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData('artist', item.artists[0].id)" class="ellipsis text">{{ item.artists[0].name }}</div>
+                        </div>
+                    </transition>    
+                </template>
+                <template  v-if="searchType == 'artists'" v-for="(item, index) in searchResult" v-on:load="first = true">
+                    <transition name="fadeSlide">
+                        <div class="top-item" v-if="first && index < 10">
+                            <div class="ellipsis text">{{ item.name }}</div>
+                            <img v-if="item.images[1]" :src="item.images[1].url" alt="Artist photo" />
+                            <div v-else class='noimage'></div>
+                        </div>
+                        <div class="top-item" v-if="!first && index >= 10">
+                            <div class="ellipsis text">{{ item.name }}</div>
+                            <img v-if="item.images[1]" :src="item.images[1].url" alt="Artist photo" />
+                            <div v-else class='noimage'></div>
                         </div>
                     </transition>    
                 </template>
                 <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
             </div>
         </div>
+    </div>  
     `,
     data: function() {
         return { first: true };
@@ -81,11 +107,11 @@ Vue.component('search-top', {
 })
 
 Vue.component('search-result', {
-    props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'getTrackData'],
+    props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'getTrackData', 'searchType'],
     template: `
-    <div id="searchresultTable">
+    <div>
         <p v-if="searchResult.length == 0">Your search for:<strong>{{searchMetaData.query}}</strong> gave no hits!</p>
-        <table v-if="searchResult.length > 0">
+        <table v-if="searchResult.length > 0 && searchType =='tracks'">
             <thead>
                 <tr>
                     <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
@@ -96,12 +122,30 @@ Vue.component('search-result', {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="track in searchResult">
-                    <td class="slim no">{{track.staticIndex + 1 + searchMetaData.offset}}</td>
-                    <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
-                    <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, </span></td>
-                    <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
-                    <td class="slim">{{ track.popularity }}%</td>
+                <tr v-for="item in searchResult">
+                    <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
+                    <td v-on:click="getTrackData(item.id)" class="link">{{item.name}}</td>
+                    <td><span v-for="artist in item.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, </span></td>
+                    <td class="slim">{{item.duration_ms | minutesSeconds }}</td>
+                    <td class="slim">{{ item.popularity }}%</td>
+                </tr>
+            </tbody>
+        </table>
+        <table v-if="searchResult.length > 0 && searchType =='artists'">
+            <thead>
+                <tr>
+                    <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
+                    <th v-on:click="sortResult('name')">Name</th>
+                    <th v-on:click="sortResult('genres[0]')">Genres</th>
+                    <th v-on:click="sortResult('followers.total')" class="slim">Followers</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in searchResult">
+                    <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
+                    <td v-on:click="getTrackData(item.id)" class="link">{{item.name}}</td>
+                    <td><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
+                    <td class="slim">{{ item.followers.total | formatNumbers }}</td>
                 </tr>
             </tbody>
         </table>
@@ -116,7 +160,7 @@ Vue.component('artist-modal', {
         <div class="hidePopUp" v-on:click="closeModal">×</div>
         <h2>{{ artistData.name }}</h2>
         <div class="column1">
-            <img :src="artistData.images[1].url" alt="artist photo" />
+            <img v-if="artistData.images[1]" :src="artistData.images[1].url" alt="artist photo" />
         </div>
         <table>
             <thead>
@@ -156,7 +200,7 @@ Vue.component('track-modal', {
         <div class="hidePopUp" v-on:click="closeModal">×</div>
             <h2>{{ trackData.name }}</h2>
             <div class="column1">
-                <img :src="trackData.album.images[1].url" alt="album photo" />
+                <img v-if="trackData.album.images[1]" :src="trackData.album.images[1].url" alt="album photo" />
                 <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }},</span> </p>           
                 <p>Album: {{ trackData.album.name }}</p>
                 <p>
@@ -206,18 +250,25 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
-        searchResult: {},
+        searchResult: {
+            images: []
+        },
         searchMetaData: {},
         artistData: null,
         trackData: null,
+        searchType: 'tracks'
     },
     components: {},
     methods: {
-        getSearchResult: function(action, param1) {
-
+        getSearchResult: function(action, param1, param2) {
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
-                spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
+                if (param2) this.searchType = param2;
+                if (this.searchType == 'tracks') {
+                    spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
+                } else {
+                    spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=artist&limit=20';
+                }
                 sessionStorage.setItem("lastQuery", param1);
             }
             if (action === 'paging') {
@@ -238,25 +289,32 @@ app = new Vue({
             this.showSpinner();
 
             this.$http.get(spotifyUrl).then(response => {
+
                 /* Search result */
-                searchResultTemp = response.body.tracks.items;
+                console.log('response.body: ', response.body)
+                if (this.searchType == 'tracks') {
+                    searchResultTemp = response.body.tracks;
+                } else {
+                    searchResultTemp = response.body.artists;
+                }
                 this.searchResult = [];
-                for (var i = 0; i < searchResultTemp.length; i++) { // adding a static number to make search result sortable on number
-                    tempObj = _.merge(searchResultTemp[i], { staticIndex: i });
+                for (var i = 0; i < searchResultTemp.items.length; i++) { // adding a static number to make search result sortable on number
+                    tempObj = _.merge(searchResultTemp.items[i], { staticIndex: i });
                     this.searchResult.push(tempObj);
                 }
 
                 /* Search result meta data */
                 disabledPrev = false;
                 disabledNext = false;
-                if (!response.body.tracks.previous) disabledPrev = true;
-                if (!response.body.tracks.next) disabledNext = true;
+                if (!searchResultTemp.previous) disabledPrev = true;
+                if (!searchResultTemp.next) disabledNext = true;
+
                 this.searchMetaData = {
-                    total: response.body.tracks.total,
+                    total: searchResultTemp.total,
                     query: param1,
-                    offset: response.body.tracks.offset,
-                    previous: response.body.tracks.previous,
-                    next: response.body.tracks.next,
+                    offset: searchResultTemp.offset,
+                    previous: searchResultTemp.previous,
+                    next: searchResultTemp.next,
                     disabledPrev: disabledPrev,
                     disabledNext: disabledNext
                 }
@@ -264,6 +322,7 @@ app = new Vue({
                 console.log('response.body: ', response.body);
                 console.log('searchMetaData: ', this.searchMetaData);
                 console.log('this.searchResult: ', this.searchResult);
+                console.log('this.searchType: ', this.searchType);
                 this.hideSpinner();
             }, response => {
                 console.log('error callback', response);

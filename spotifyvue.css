@@ -94,6 +94,14 @@ button:disabled {
     text-transform: uppercase;
 }
 
+#searchChoiceContainer {
+    margin: 1em 0 0;
+}
+
+#searchChoiceContainer label {
+    margin-right: 2em;
+}
+
 
 /* Top results */
 
@@ -136,6 +144,12 @@ button:disabled {
 .top-item img {
     max-height: 130px;
     max-width: 150px;
+}
+
+.noimage {
+    background: #f0f0f0;
+    height: 130px;
+    width: 150px;
 }
 
 .top-item .text {
