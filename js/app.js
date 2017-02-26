@@ -72,13 +72,13 @@ Vue.component('search-top', {
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="first && index < 10">
                             <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
-                            <img v-on:click="getTrackData(item.id)" :src="item.album.images[1].url" alt="Album photo" />
-                            <div v-on:click="getArtistData('artist', item.artists[0].id)" class="ellipsis text">{{ item.artists[0].name }}</div>
+                            <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                         <div class="top-item" v-if="!first && index >= 10">
                             <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
-                            <img v-on:click="getTrackData(item.id)" :src="item.album.images[1].url" alt="Album photo" />
-                            <div v-on:click="getArtistData('artist', item.artists[0].id)" class="ellipsis text">{{ item.artists[0].name }}</div>
+                            <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                     </transition>    
                 </template>
@@ -86,12 +86,12 @@ Vue.component('search-top', {
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="first && index < 10">
                             <div class="ellipsis text">{{ item.name }}</div>
-                            <img v-if="item.images[1]" :src="item.images[1].url" alt="Artist photo" />
+                            <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
                         <div class="top-item" v-if="!first && index >= 10">
                             <div class="ellipsis text">{{ item.name }}</div>
-                            <img v-if="item.images[1]" :src="item.images[1].url" alt="Artist photo" />
+                            <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
                     </transition>    
