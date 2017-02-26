@@ -21,9 +21,12 @@ Vue.component('search-box', {
     props: ['getSearchResult'],
     template: `
     <div id="searchBox">
-        <input id="query" type="text" value="love" autofocus>
+        <input id="query" type="text" :value="searchquery" autofocus>
         <button id="searchButton" v-on:click="getSearchResult('search', searchquery)">Search</button>
     </div>`,
+    created: function() {
+        this.searchquery = sessionStorage.getItem("lastQuery");
+    },
     subscriptions: function() {
         return {
             // Dette er en observable som fyrer på keyup fra #query-elementet.
@@ -31,29 +34,29 @@ Vue.component('search-box', {
                 .debounce(300) // Vent til der ikke er tastet i 300ms
                 .distinctUntilChanged() // Fyr kun hvis værdien har ændret sig
                 .filter(query => query.length > 0) // Filtrer tomme værdier fra.
-                .startWith('love') // Start med søgningen 'love'
+                .startWith(sessionStorage.getItem("lastQuery")) // Start med søgningen fra session.storage
                 .do(query => this.getSearchResult('search', query)) // Fyr søgningen.
         }
     }
 })
 
 Vue.component('search-pager', {
-    props: ['total', 'offset', 'getSearchResult', 'disabledPrev', 'disabledNext'],
+    props: ['getSearchResult', 'searchMetaData'],
     template: `
-    <div  class="pager" v-show="total > 20">
-        <button class="previous" :disabled="disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
-        <button class="next" :disabled="disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
-        <span>Showing {{ offset + 1 }} - {{ offset + 20 }} of {{ total | formatNumbers }} results</span>
+    <div  class="pager" v-show="searchMetaData.total > 20">
+        <button class="previous" :disabled="searchMetaData.disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
+        <button class="next" :disabled="searchMetaData.disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
+        <span>Showing {{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 20 }} of {{ searchMetaData.total | formatNumbers }} results</span>
     </div>`
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'getTrackData', 'getArtistData', 'offset'],
+    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData'],
     template: `
     
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
-                <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ offset + 1 }} - {{ offset + 11 }}</div> 
+                <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
                 <template v-for="(track, index) in searchResult">
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="first && index < 10">
@@ -68,7 +71,7 @@ Vue.component('search-top', {
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ offset + 11 }} - {{ offset + 21 }}</div>
+                <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
             </div>
         </div>
     `,
@@ -78,10 +81,10 @@ Vue.component('search-top', {
 })
 
 Vue.component('search-result', {
-    props: ['searchResult', 'sortResult', 'offset', 'getArtistData', 'getTrackData'],
+    props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'getTrackData'],
     template: `
     <div id="searchresultTable">
-        <p v-if="searchResult.length == 0">No search result</p>
+        <p v-if="searchResult.length == 0">Your search for:<strong>{{searchMetaData.query}}</strong> gave no hits!</p>
         <table v-if="searchResult.length > 0">
             <thead>
                 <tr>
@@ -94,13 +97,13 @@ Vue.component('search-result', {
             </thead>
             <tbody>
                 <tr v-for="track in searchResult">
-                    <td class="slim no">{{track.staticIndex + 1 + offset}}</td>
+                    <td class="slim no">{{track.staticIndex + 1 + searchMetaData.offset}}</td>
                     <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
-                    <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, <span></td>
+                    <td><span v-for="artist in track.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, </span></td>
                     <td class="slim">{{track.duration_ms | minutesSeconds }}</td>
                     <td class="slim">{{ track.popularity }}%</td>
                 </tr>
-            <tbody>
+            </tbody>
         </table>
     </div>`,
 })
@@ -154,7 +157,7 @@ Vue.component('track-modal', {
             <h2>{{ trackData.name }}</h2>
             <div class="column1">
                 <img :src="trackData.album.images[1].url" alt="album photo" />
-                <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }}, </p>           
+                <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }},</span> </p>           
                 <p>Album: {{ trackData.album.name }}</p>
                 <p>
                     <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
@@ -203,15 +206,10 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
-        disabledPrev: false,
-        disabledNext: false,
         searchResult: {},
+        searchMetaData: {},
         artistData: null,
         trackData: null,
-        previous: null,
-        next: null,
-        total: 0,
-        offset: 0
     },
     components: {},
     methods: {
@@ -220,26 +218,27 @@ app = new Vue({
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
                 spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
-                //sessionStorage.setItem("lastQuery", param1);
+                sessionStorage.setItem("lastQuery", param1);
             }
             if (action === 'paging') {
                 if (param1 === 'next') {
-                    if (!this.next) { // Checking if there's more results
+                    if (!this.searchMetaData.next) { // Checking if there's more results
                         return;
                     }
-                    spotifyUrl = this.next;
+                    spotifyUrl = this.searchMetaData.next;
                 }
                 if (param1 === 'previous') {
-                    if (!this.previous) { // Checking if this is the first result
+                    if (!this.searchMetaData.previous) { // Checking if this is the first result
                         return;
                     }
-                    spotifyUrl = this.previous;
+                    spotifyUrl = this.searchMetaData.previous;
                 }
             }
 
             this.showSpinner();
 
             this.$http.get(spotifyUrl).then(response => {
+                /* Search result */
                 searchResultTemp = response.body.tracks.items;
                 this.searchResult = [];
                 for (var i = 0; i < searchResultTemp.length; i++) { // adding a static number to make search result sortable on number
@@ -247,19 +246,23 @@ app = new Vue({
                     this.searchResult.push(tempObj);
                 }
 
-                this.total = response.body.tracks.total;
-                this.offset = response.body.tracks.offset;
-                this.previous = response.body.tracks.previous;
-                this.next = response.body.tracks.next;
-                this.disabledPrev = false;
-                this.disabledNext = false;
-                if (!this.previous) {
-                    this.disabledPrev = true;
+                /* Search result meta data */
+                disabledPrev = false;
+                disabledNext = false;
+                if (!response.body.tracks.previous) disabledPrev = true;
+                if (!response.body.tracks.next) disabledNext = true;
+                this.searchMetaData = {
+                    total: response.body.tracks.total,
+                    query: param1,
+                    offset: response.body.tracks.offset,
+                    previous: response.body.tracks.previous,
+                    next: response.body.tracks.next,
+                    disabledPrev: disabledPrev,
+                    disabledNext: disabledNext
                 }
-                if (!this.next) {
-                    this.disabledNext = true;
-                }
-                console.log('response.body.tracks: ', response.body.tracks.items);
+
+                console.log('response.body: ', response.body);
+                console.log('searchMetaData: ', this.searchMetaData);
                 console.log('this.searchResult: ', this.searchResult);
                 this.hideSpinner();
             }, response => {
