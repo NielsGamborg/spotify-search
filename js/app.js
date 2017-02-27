@@ -84,12 +84,12 @@ Vue.component('search-top', {
                 </template>
                 <template  v-if="searchType == 'artists'" v-for="(item, index) in searchResult" v-on:load="first = true">
                     <transition name="fadeSlide">
-                        <div class="top-item" v-if="first && index < 10">
+                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="first && index < 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
-                        <div class="top-item" v-if="!first && index >= 10">
+                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="!first && index >= 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
@@ -143,7 +143,7 @@ Vue.component('search-result', {
             <tbody>
                 <tr v-for="item in searchResult">
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
-                    <td v-on:click="getTrackData(item.id)" class="link">{{item.name}}</td>
+                    <td v-on:click="getArtistData('artist', item.id)" class="link">{{item.name}}</td>
                     <td><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
                     <td v-if="item.followers" class="slim">{{ item.followers.total | formatNumbers }}</td>
                 </tr>
@@ -160,7 +160,11 @@ Vue.component('artist-modal', {
         <div class="hidePopUp" v-on:click="closeModal">×</div>
         <h2>{{ artistData.name }}</h2>
         <div class="column1">
-            <img v-if="artistData.images[1]" :src="artistData.images[1].url" alt="artist photo" />
+            <img v-if="artistData.images[0]" :src="artistData.images[0].url" alt="artist photo" />
+            <div v-else>
+                <p>No spotify image available</p>
+                <div class='noimage'></div>
+            </div>
         </div>
         <table>
             <thead>
@@ -316,7 +320,7 @@ app = new Vue({
                     disabledNext: disabledNext
                 }
 
-                console.log('response.body: ', response.body);
+                //console.log('response.body: ', response.body);
                 //console.log('searchMetaData: ', this.searchMetaData);
                 console.log('this.searchResult: ', this.searchResult);
                 this.hideSpinner();
@@ -351,7 +355,6 @@ app = new Vue({
                 }, response => {
                     console.log('error callback', response);
                 });
-                console.log('getArtistData i roden, Type, id ', type, id)
             }
         },
 
