@@ -47,7 +47,7 @@ Vue.component('search-box', {
         return {
             // Dette er en observable som fyrer på keyup fra #query-elementet.
             inputValue: this.$fromDOMEvent('#query', 'keyup').pluck('target', 'value')
-                .debounce(300) // Vent til der ikke er tastet i 300ms
+                .debounce(500) // Vent til der ikke er tastet i 500ms
                 .distinctUntilChanged() // Fyr kun hvis værdien har ændret sig
                 .filter(query => query.length > 0) // Filtrer tomme værdier fra.
                 .startWith(sessionStorage.getItem("lastQuery")) // Start med søgningen fra session.storage
