@@ -67,47 +67,58 @@ Vue.component('search-pager', {
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType'],
+    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType', 'showFirst'],
     template: `
     <div>
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
-                <div v-on:click="first = !first" v-if="!first" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
-                <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult" v-on:load="first = true">
+                <div v-on:click="showFirst = !showFirst" v-if="!showFirst" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
+                <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
-                        <div class="top-item" v-if="first && index < 10">
+                        <div class="top-item" v-if="showFirst && index < 10">
                             <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
                             <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
                             <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
-                        <div class="top-item" v-if="!first && index >= 10">
+                        <div class="top-item" v-if="!showFirst && index >= 10">
                             <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
                             <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
                             <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                     </transition>    
                 </template>
-                <template  v-if="searchType == 'artists'" v-for="(item, index) in searchResult" v-on:load="first = true">
+                <template  v-if="searchType == 'artists'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
-                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="first && index < 10">
+                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="showFirst && index < 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
-                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="!first && index >= 10">
+                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="!showFirst && index >= 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="first = !first" v-if="first && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="showFirst = !showFirst" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
             </div>
         </div>
     </div>  
     `,
-    data: function() {
-        return { first: true };
+    /*
+        data: function() {
+            if (this.showFirs) {
+                showFirst = true;
+            } else {
+                showFirst = false;
+            }
+            return { showFirst: showFirst };
+        },*/
+    methods: {
+        someFunction: function() {
+
+        }
     }
 })
 
@@ -259,6 +270,7 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
+        showFirst: true,
         searchResult: {},
         searchMetaData: {},
         artistData: null,
@@ -268,6 +280,8 @@ app = new Vue({
     components: {},
     methods: {
         getSearchResult: function(action, param1, param2) {
+            //this.showFirst = false;
+            this.showFirst = true;
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
                 if (param2) {
