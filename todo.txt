@@ -3,4 +3,3 @@ TODOs
 
 - Bladre pile i top result skal skjules hvis man ikke kan bladre mere
 - Bug. Ved første søgning søges altid i tracks, selv om artist er valgt
-- HUske search type ved reload

@@ -31,8 +31,13 @@ Vue.component('search-box', {
         </div>    
     </div>`,
     data: function() {
+        if (sessionStorage.getItem("searchtype")) {
+            searchType = sessionStorage.getItem("searchtype");
+        } else {
+            searchType = "tracks";
+        }
         return {
-            searchType: "tracks"
+            searchType: searchType
         }
     },
     created: function() {
@@ -46,7 +51,7 @@ Vue.component('search-box', {
                 .distinctUntilChanged() // Fyr kun hvis værdien har ændret sig
                 .filter(query => query.length > 0) // Filtrer tomme værdier fra.
                 .startWith(sessionStorage.getItem("lastQuery")) // Start med søgningen fra session.storage
-                .do(query => this.getSearchResult('search', query)) // Fyr søgningen.
+                .do(query => this.getSearchResult('search', query, sessionStorage.getItem("searchtype"))) // Fyr søgningen.
         }
     }
 })
@@ -110,7 +115,7 @@ Vue.component('search-result', {
     props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'getTrackData', 'searchType'],
     template: `
     <div>
-        <p v-if="searchResult.length == 0">Your search for:<strong>{{searchMetaData.query}}</strong> gave no hits!</p>
+        <p v-if="searchResult.length == 0">Your search for: <strong> {{searchMetaData.query}}</strong> returned no {{searchType}}!</p>
         <table v-if="searchResult.length > 0 && searchType =='tracks'">
             <thead>
                 <tr>
@@ -265,7 +270,10 @@ app = new Vue({
         getSearchResult: function(action, param1, param2) {
             if (action === 'search') {
                 if (param1 === '' || param1 === null) return;
-                if (param2) this.searchType = param2;
+                if (param2) {
+                    this.searchType = param2;
+                    sessionStorage.setItem("searchtype", this.searchType);
+                }
                 if (this.searchType == 'tracks') {
                     spotifyUrl = 'https://api.spotify.com/v1/search?q=' + param1 + '&type=track&limit=20';
                 } else {
