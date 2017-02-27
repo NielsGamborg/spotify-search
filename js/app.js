@@ -144,8 +144,8 @@ Vue.component('search-result', {
                 <tr v-for="item in searchResult">
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
                     <td v-on:click="getArtistData('artist', item.id)" class="link">{{item.name}}</td>
-                    <td><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
-                    <td v-if="item.followers" class="slim">{{ item.followers.total | formatNumbers }}</td>
+                    <td class="genre"><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
+                    <td class="slim no"><span v-if="item.followers">{{ item.followers.total | formatNumbers }}</span></td>
                 </tr>
             </tbody>
         </table>

@@ -2,5 +2,5 @@ TODOs
 
 
 - Bladre pile i top result skal skjules hvis man ikke kan bladre mere
-- Konsol fejl ved bladring mlm artist og tracks pga udefinerede object properties f.eks. søgning på : "john moge*" og så search type toggle
-- Bug. Ved første søgning søges altid i tracks, selv om artist er valgt.
+- Bug. Ved første søgning søges altid i tracks, selv om artist er valgt
+- HUske search type ved reload

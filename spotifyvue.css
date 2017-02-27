@@ -48,6 +48,16 @@ td.no {
     text-align: right;
 }
 
+td.genre {
+    width: 40%;
+}
+
+td.genre .genreTag {
+    display: inline-block;
+    padding: 2px 10px 2px 0;
+    white-space: nowrap;
+}
+
 button {
     border: 0;
     border-radius: 3px;
