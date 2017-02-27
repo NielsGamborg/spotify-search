@@ -101,7 +101,7 @@ Vue.component('search-top', {
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="first = !first" v-if="first" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="first = !first" v-if="first && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
             </div>
         </div>
     </div>  
@@ -329,7 +329,7 @@ app = new Vue({
                 }
 
                 //console.log('response.body: ', response.body);
-                //console.log('searchMetaData: ', this.searchMetaData);
+                console.log('searchMetaData: ', this.searchMetaData);
                 console.log('this.searchResult: ', this.searchResult);
                 this.hideSpinner();
             }, response => {
