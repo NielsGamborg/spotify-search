@@ -7,13 +7,7 @@ Vue.filter('minutesSeconds', function(value) {
 
 Vue.filter('formatNumbers', function(value) {
     if (!value) return '';
-    filteredValue = value.toString();
-    if (value > 999 && value < 1000000) {
-        filteredValue = filteredValue.substring(0, filteredValue.length - 3) + '.' + filteredValue.substring(filteredValue.length - 3);
-    }
-    if (value > 1000000) {
-        filteredValue = filteredValue.substring(0, filteredValue.length - 6) + '.' + filteredValue.substring(filteredValue.length - 6, filteredValue.length - 3) + '.' + filteredValue.substring(filteredValue.length - 3);
-    }
+    filteredValue = value.toLocaleString();
     return filteredValue;
 })
 
