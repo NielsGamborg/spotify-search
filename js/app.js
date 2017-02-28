@@ -145,6 +145,7 @@ Vue.component('search-result', {
             <thead>
                 <tr>
                     <th v-on:click="sortResult('staticIndex')" class="slim">No.</th>
+                    <th>Photo</th>
                     <th v-on:click="sortResult('name')">Name</th>
                     <th v-on:click="sortResult('genres[0]')">Genres</th>
                     <th v-on:click="sortResult('followers.total')" class="slim">Followers</th>
@@ -153,6 +154,7 @@ Vue.component('search-result', {
             <tbody>
                 <tr v-for="item in searchResult">
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
+                    <td v-on:click="getArtistData('artist', item.id)" class="photo"><img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" /></td>
                     <td v-on:click="getArtistData('artist', item.id)" class="link">{{item.name}}</td>
                     <td class="genre"><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
                     <td class="slim no"><span v-if="item.followers">{{ item.followers.total | formatNumbers }}</span></td>

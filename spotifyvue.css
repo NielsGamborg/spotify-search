@@ -48,6 +48,15 @@ td.no {
     text-align: right;
 }
 
+td.photo {
+    cursor: pointer;
+    width: 120px;
+}
+
+td.photo img {
+    max-width: 120px;
+}
+
 td.genre {
     width: 40%;
 }
