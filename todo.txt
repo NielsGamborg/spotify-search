@@ -4,4 +4,3 @@ TODOs
 - Nulstil top pile (var first)  ved bladring og searchtype skift. Fixet, men fixet udløser en advarsel:[Vue warn]: Avoid mutating a prop directly since the value will be overwritten whenever the parent component re-renders. Instead, use a data or computed property based on the prop's value. Prop being mutated: "showFirst" 
 (found in <SearchTop>)
 
-- Bug. Ved første søgning søges altid i tracks, selv om artist er valgt

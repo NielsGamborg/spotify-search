@@ -45,7 +45,7 @@ Vue.component('search-box', {
                 .distinctUntilChanged() // Fyr kun hvis værdien har ændret sig
                 .filter(query => query.length > 0) // Filtrer tomme værdier fra.
                 .startWith(sessionStorage.getItem("lastQuery")) // Start med søgningen fra session.storage
-                .do(query => this.getSearchResult('search', query, sessionStorage.getItem("searchtype"))) // Fyr søgningen.
+                .do(query => this.getSearchResult('search', query, this.searchType)) // Fyr søgningen.
         }
     }
 })
@@ -102,7 +102,7 @@ Vue.component('search-top', {
     `,
     /*
         data: function() {
-            if (this.showFirs) {
+            if (this.showFirst) {
                 showFirst = true;
             } else {
                 showFirst = false;
