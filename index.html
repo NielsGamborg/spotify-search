@@ -21,7 +21,7 @@
 
             <div>
                 <search-box :get-search-result="getSearchResult"></search-box>
-                <search-top :search-result="searchResult" :search-meta-data="searchMetaData" :get-track-data="getTrackData" :get-artist-data="getArtistData" :search-type="searchType" :show-first="showFirst"></search-top>
+                <search-top :search-result="searchResult" :search-meta-data="searchMetaData" :get-track-data="getTrackData" :get-artist-data="getArtistData" :search-type="searchType" :visual-pager="visualPager" :show-first="showFirst"></search-top>
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
                 <search-result :search-result="searchResult" :search-meta-data="searchMetaData" :get-artist-data="getArtistData" :get-track-data="getTrackData" :sort-result="sortResult" :search-type="searchType"></search-result>
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>

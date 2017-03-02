@@ -61,12 +61,12 @@ Vue.component('search-pager', {
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType', 'showFirst'],
+    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType', 'visualPager', 'showFirst'],
     template: `
     <div>
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
-                <div v-on:click="showFirst = !showFirst" v-if="!showFirst" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
+                <div v-on:click="visualPager" v-if="!showFirst" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
                 <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="showFirst && index < 10">
@@ -95,7 +95,7 @@ Vue.component('search-top', {
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="showFirst = !showFirst" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="visualPager" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
             </div>
         </div>
     </div>  
@@ -384,6 +384,10 @@ app = new Vue({
             }
             this.hideSpinner('modal');
             this.showModal('track');
+        },
+
+        visualPager: function() {
+            this.showFirst = !this.showFirst
         },
 
         showSpinner: function() {
