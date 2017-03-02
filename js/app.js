@@ -66,7 +66,8 @@ Vue.component('search-top', {
     <div>
         <div  class="top" v-if="searchResult.length > 0">
             <div class="top-container">
-                <div v-on:click="visualPager" v-if="!showFirst" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 11 }}</div> 
+                <div v-on:click="visualPager('scrolling')" v-if="!showFirst" class="top-item first arrow">{{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 10 }}</div> 
+                <div v-on:click="visualPager('paging','previous')" v-if="showFirst && searchMetaData.offset - 1 > 0 " class="top-item first arrow">{{ searchMetaData.offset - 9 }} - {{ searchMetaData.offset }}</div> 
                 <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="showFirst && index < 10">
@@ -95,7 +96,8 @@ Vue.component('search-top', {
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="visualPager" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="visualPager('scrolling')" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="visualPager('paging','next')" v-if="!showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 21 }} - {{ searchMetaData.offset + 31 }}</div>
             </div>
         </div>
     </div>  
@@ -376,8 +378,17 @@ app = new Vue({
             this.showModal('track');
         },
 
-        visualPager: function() {
+        visualPager: function(action, direction) {
             this.showFirst = !this.showFirst
+            if (action == 'paging') {
+                if (direction == 'next') {
+                    this.getSearchResult('paging', 'next');
+                } else {
+                    this.getSearchResult('paging', 'previous');
+                    this.showFirst = false;
+                }
+            }
+            console.log(this.showFirst)
         },
 
         showSpinner: function() {

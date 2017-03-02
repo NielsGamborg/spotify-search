@@ -1,4 +1,4 @@
 TODOs
 
-Continius paging from topbar?
+Counting i page buttons doesn't match on last page
 
