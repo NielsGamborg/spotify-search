@@ -100,15 +100,6 @@ Vue.component('search-top', {
         </div>
     </div>  
     `,
-    /*
-        data: function() {
-            if (this.showFirst) {
-                showFirst = true;
-            } else {
-                showFirst = false;
-            }
-            return { showFirst: showFirst };
-        },*/
     methods: {
         someFunction: function() {
 
