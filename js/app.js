@@ -339,8 +339,7 @@ app = new Vue({
                 }
 
                 //console.log('response.body: ', response.body);
-                console.log('searchMetaData: ', this.searchMetaData);
-                console.log('this.searchResult: ', this.searchResult);
+                //console.log('searchMetaData: ', this.searchMetaData);
                 this.hideSpinner();
             }, response => {
                 console.log('error callback', response);
