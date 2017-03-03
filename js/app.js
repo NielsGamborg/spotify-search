@@ -53,9 +53,11 @@ Vue.component('search-box', {
 Vue.component('search-pager', {
     props: ['getSearchResult', 'searchMetaData'],
     template: `
-    <div  class="pager" v-show="searchMetaData.total > 20">
-        <button class="previous" :disabled="searchMetaData.disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
-        <button class="next" :disabled="searchMetaData.disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
+    <div class="pager">
+        <template  v-if="searchMetaData.total > 20">
+            <button class="previous" :disabled="searchMetaData.disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
+            <button class="next" :disabled="searchMetaData.disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
+        </template>
         <span>Showing {{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 20 }} of {{ searchMetaData.total | formatNumbers }} results</span>
     </div>`
 })
