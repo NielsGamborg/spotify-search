@@ -58,7 +58,11 @@ Vue.component('search-pager', {
             <button class="previous" :disabled="searchMetaData.disabledPrev" v-on:click="getSearchResult('paging','previous')">Previous</button>
             <button class="next" :disabled="searchMetaData.disabledNext" v-on:click="getSearchResult('paging','next')">Next</button>
         </template>
-        <span  v-if="searchMetaData.total > 0">Showing {{ searchMetaData.offset + 1 }} - {{ searchMetaData.offset + 20 }} of {{ searchMetaData.total | formatNumbers }} results</span>
+        <span  v-if="searchMetaData.total > 0">Showing {{ searchMetaData.offset + 1 }} - 
+            <span v-if="searchMetaData.offset + 20 < searchMetaData.total" >{{ searchMetaData.offset + 20 }}</span>
+            <span v-else>{{ searchMetaData.total }}</span>
+            of {{ searchMetaData.total | formatNumbers }} results
+        </span>
     </div>`
 })
 
