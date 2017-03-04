@@ -102,8 +102,8 @@ Vue.component('search-top', {
                         </div>
                     </transition>    
                 </template>
-                <div v-on:click="visualPager('scrolling')" v-if="showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
-                <div v-on:click="visualPager('paging','next')" v-if="!showFirst && searchMetaData.offset + 11 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 21 }} - {{ searchMetaData.offset + 31 }}</div>
+                <div v-on:click="visualPager('scrolling')" v-if="showFirst && searchMetaData.offset + 10 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 11 }} - {{ searchMetaData.offset + 21 }}</div>
+                <div v-on:click="visualPager('paging','next')" v-if="!showFirst && searchMetaData.offset + 20 < searchMetaData.total" class="top-item last arrow">{{ searchMetaData.offset + 21 }} - {{ searchMetaData.offset + 31 }}</div>
             </div>
         </div>
     </div>  
