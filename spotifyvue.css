@@ -260,6 +260,7 @@ button:disabled {
     border-radius: 5px;
     color: white;
     min-height: 300px;
+    overflow: auto;
     padding: 2em;
     position: fixed;
     top: 10%;
@@ -293,6 +294,13 @@ button:disabled {
     margin: 0 0 1em;
 }
 
+.dataModal h3 {
+    clear: both;
+    float: left;
+    font-size: 20px;
+    margin: 1em 0 .5em;
+}
+
 .dataModal table {
     width: 45%;
 }
@@ -312,6 +320,15 @@ button:disabled {
 .dataModal tr,
 .dataModal tr:nth-child(2n) {
     background: black;
+}
+
+.dataModal table.topTracks {
+    margin-top: .5em;
+    width: 100%;
+}
+
+.dataModal table.topTracks td {
+    padding: .3em 2em;
 }
 
 .dataModal a {

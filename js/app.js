@@ -165,44 +165,66 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData', 'closeModal'],
+    props: ['artistData', 'artistTopTracks', 'closeModal'],
     template: `
-    <transition name="fade"><div  class="dataModal artist">
-        <div class="hidePopUp" v-on:click="closeModal">×</div>
-        <h2>{{ artistData.name }}</h2>
-        <div class="column1">
-            <img v-if="artistData.images[0]" :src="artistData.images[0].url" alt="artist photo" />
-            <div v-else>
-                <p>No spotify image available</p>
-                <div class='noimage'></div>
+    <transition name="fade">
+        <div  class="dataModal artist">
+            <div class="hidePopUp" v-on:click="closeModal">×</div>
+            <h2>{{ artistData.name }}</h2>
+            <div class="column1">
+                <img v-if="artistData.images[0]" :src="artistData.images[0].url" alt="artist photo" />
+                <div v-else>
+                    <p>No spotify image available</p>
+                    <div class='noimage'></div>
+                </div>
             </div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="2">{{ artistData.name }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Popularity</td>
-                    <td>{{ artistData.popularity }}%</td>
-                </tr>
-                <tr>
-                    <td>Followers</td>
-                    <td>{{ artistData.followers.total | formatNumbers}}</td>
-                </tr>
-                <tr>
-                    <td>Genres</td>
-                    <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Spotify link</td>
-                    <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
-                </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">{{ artistData.name }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Popularity</td>
+                        <td>{{ artistData.popularity }}%</td>
+                    </tr>
+                    <tr>
+                        <td>Followers</td>
+                        <td>{{ artistData.followers.total | formatNumbers}}</td>
+                    </tr>
+                    <tr>
+                        <td>Genres</td>
+                        <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Spotify link</td>
+                        <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Top {{ artistTopTracks.length }} tracks</h3>
+            <table class="topTracks">
+                <thead>
+                    <tr>
+                        <th class="slim no">No.</th>
+                        <th>Name</th>
+                        <th>Album</th>
+                        <th class="slim">Popularity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(track, index) in artistTopTracks">
+                        <td class="slim no">{{index + 1}}</td>
+                        <td>{{track.name}}</td>
+                        <td>{{track.album.name}}</td>
+                        <td class="slim">{{track.popularity}}%</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
     </transition>`
 })
@@ -269,6 +291,7 @@ app = new Vue({
         searchResult: {},
         searchMetaData: {},
         artistData: null,
+        artistTopTracks: null,
         trackData: null,
         searchType: 'tracks'
     },
@@ -364,12 +387,19 @@ app = new Vue({
             if (type === 'artist') {
                 this.showSpinner();
                 var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
+                var spotifyUrlTop = "https://api.spotify.com/v1/artists/" + id + "/top-tracks?country=dk";
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
-                    this.hideSpinner('modal');
-                    this.showModal('artist');
+                    this.$http.get(spotifyUrlTop).then(response => {
+                        this.artistTopTracks = response.body.tracks;
+                        console.log('this.artistTopTracks ', this.artistTopTracks);
+                        this.hideSpinner('modal');
+                        this.showModal('artist');
+                    }, response => {
+                        console.log('error callback2', response);
+                    });
                 }, response => {
-                    console.log('error callback', response);
+                    console.log('error callback1', response);
                 });
             }
         },
