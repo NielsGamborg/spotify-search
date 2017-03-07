@@ -165,7 +165,7 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData', 'artistTopTracks', 'closeModal'],
+    props: ['artistData', 'closeModal'],
     template: `
     <transition name="fade">
         <div  class="dataModal artist">
@@ -205,7 +205,7 @@ Vue.component('artist-modal', {
                 </tbody>
             </table>
 
-            <h3>Top {{ artistTopTracks.length }} tracks</h3>
+            <h3>Top {{ artistData.tracks.length }} tracks</h3>
             <table class="topTracks">
                 <thead>
                     <tr>
@@ -216,7 +216,7 @@ Vue.component('artist-modal', {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(track, index) in artistTopTracks">
+                    <tr v-for="(track, index) in artistData.tracks">
                         <td class="slim no">{{index + 1}}</td>
                         <td>{{track.name}}</td>
                         <td>{{track.album.name}}</td>
@@ -291,7 +291,6 @@ app = new Vue({
         searchResult: {},
         searchMetaData: {},
         artistData: null,
-        artistTopTracks: null,
         trackData: null,
         searchType: 'tracks'
     },
@@ -344,7 +343,7 @@ app = new Vue({
                     this.searchResult.push(tempObj);
                 }
 
-                /* Search result meta data */
+                /* Search result meta data object */
                 disabledPrev = false;
                 disabledNext = false;
                 if (!searchResultTemp.previous) disabledPrev = true;
@@ -391,8 +390,9 @@ app = new Vue({
                 this.$http.get(spotifyUrl).then(response => {
                     this.artistData = response.body;
                     this.$http.get(spotifyUrlTop).then(response => {
-                        this.artistTopTracks = response.body.tracks;
-                        console.log('this.artistTopTracks ', this.artistTopTracks);
+                        var artistTopTracks = response.body;
+                        console.log('artistTopTracks ', artistTopTracks);
+                        this.artistData = _.merge(this.artistData, artistTopTracks);
                         this.hideSpinner('modal');
                         this.showModal('artist');
                     }, response => {

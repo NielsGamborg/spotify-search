@@ -1,4 +1,4 @@
 TODOs
 
-Counting i page buttons doesn't match on last page
+Scrolling in modal with smaller screen
 

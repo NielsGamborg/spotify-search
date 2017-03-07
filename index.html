@@ -25,7 +25,7 @@
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
                 <search-result :search-result="searchResult" :search-meta-data="searchMetaData" :get-artist-data="getArtistData" :get-track-data="getTrackData" :sort-result="sortResult" :search-type="searchType"></search-result>
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
-                <artist-modal v-if="modalartist" :artist-data="artistData" :artist-top-tracks="artistTopTracks" :close-modal="closeModal"></artist-modal>
+                <artist-modal v-if="modalartist" :artist-data="artistData" :close-modal="closeModal"></artist-modal>
                 <track-modal v-if="modaltrack" :track-data="trackData" :close-modal="closeModal"></track-modal>
             </div>
 
