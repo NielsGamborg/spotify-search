@@ -258,12 +258,13 @@ button:disabled {
 .dataModal {
     background: black;
     border-radius: 5px;
+    box-sizing: border-box;
     color: white;
     min-height: 300px;
     overflow: auto;
     padding: 2em;
     position: fixed;
-    top: 10%;
+    top: 5%;
     left: calc(50% - 400px);
     width: 800px;
     z-index: 500;

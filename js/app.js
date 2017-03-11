@@ -165,10 +165,10 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData', 'closeModal'],
+    props: ['artistData', 'closeModal', 'modalHeight'],
     template: `
     <transition name="fade">
-        <div  class="dataModal artist">
+        <div  class="dataModal artist" v-bind:style="{maxHeight: modalHeight + 'px'}"> 
             <div class="hidePopUp" v-on:click="closeModal">×</div>
             <h2>{{ artistData.name }}</h2>
             <div class="column1">
@@ -230,10 +230,10 @@ Vue.component('artist-modal', {
 })
 
 Vue.component('track-modal', {
-    props: ['trackData', 'closeModal'],
+    props: ['trackData', 'closeModal', 'modalHeight'],
     template: `
     <transition name="fade">
-        <div  class="dataModal track">
+        <div  class="dataModal track" v-bind:style="{maxHeight: modalHeight + 'px'}">
         <div class="hidePopUp" v-on:click="closeModal">×</div>
             <h2>{{ trackData.name }}</h2>
             <div class="column1">
@@ -292,7 +292,8 @@ app = new Vue({
         searchMetaData: {},
         artistData: null,
         trackData: null,
-        searchType: 'tracks'
+        searchType: 'tracks',
+        modalHeight: ''
     },
     components: {},
     methods: {
@@ -391,7 +392,6 @@ app = new Vue({
                     this.artistData = response.body;
                     this.$http.get(spotifyUrlTop).then(response => {
                         var artistTopTracks = response.body;
-                        console.log('artistTopTracks ', artistTopTracks);
                         this.artistData = _.merge(this.artistData, artistTopTracks);
                         this.hideSpinner('modal');
                         this.showModal('artist');
@@ -439,6 +439,7 @@ app = new Vue({
         },
 
         showModal: function(type) {
+            this.modalHeight = window.innerHeight - (window.innerHeight * 10 / 100);
             if (type == "track") { this.modaltrack = true };
             if (type == "artist") { this.modalartist = true };
         },

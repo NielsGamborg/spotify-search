@@ -4,7 +4,7 @@
 <head>
     <title>Search Spotify with Vue JS</title>
     <meta charset="utf-8" />
-    <link type="text/css" href="spotifyvue.css" rel="stylesheet">
+    <link type="text/css" href="spotify-search.css" rel="stylesheet">
 
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-resource@1.2.0/dist/vue-resource.min.js"></script>
@@ -25,8 +25,8 @@
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
                 <search-result :search-result="searchResult" :search-meta-data="searchMetaData" :get-artist-data="getArtistData" :get-track-data="getTrackData" :sort-result="sortResult" :search-type="searchType"></search-result>
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
-                <artist-modal v-if="modalartist" :artist-data="artistData" :close-modal="closeModal"></artist-modal>
-                <track-modal v-if="modaltrack" :track-data="trackData" :close-modal="closeModal"></track-modal>
+                <artist-modal v-if="modalartist" :artist-data="artistData" :close-modal="closeModal" :modal-height="modalHeight"></artist-modal>
+                <track-modal v-if="modaltrack" :track-data="trackData" :close-modal="closeModal" :modal-height="modalHeight"></track-modal>
             </div>
 
             <div id="spinner" v-if="loading">
