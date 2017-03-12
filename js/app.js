@@ -165,7 +165,7 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData', 'closeModal', 'modalHeight'],
+    props: ['artistData', 'closeModal', 'getTrackData', 'modalHeight'],
     template: `
     <transition name="fade">
         <div  class="dataModal artist" v-bind:style="{maxHeight: modalHeight + 'px'}"> 
@@ -211,6 +211,7 @@ Vue.component('artist-modal', {
                     <tr>
                         <th class="slim no">No.</th>
                         <th>Name</th>
+                        <th>Play</th>
                         <th>Album</th>
                         <th class="slim">Popularity</th>
                     </tr>
@@ -218,7 +219,8 @@ Vue.component('artist-modal', {
                 <tbody>
                     <tr v-for="(track, index) in artistData.tracks">
                         <td class="slim no">{{index + 1}}</td>
-                        <td>{{track.name}}</td>
+                        <td v-on:click="getTrackData(track.id)" class="link">{{track.name}}</td>
+                        <td class="playbtns"> <a v-bind:href="track.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a> </td>
                         <td>{{track.album.name}}</td>
                         <td class="slim">{{track.popularity}}%</td>
                     </tr>
@@ -407,9 +409,18 @@ app = new Vue({
             });
         },
 
-        /*showTrackData: function(id) { 
-            console.log(id)
-        },*/
+        getTrackData: function(id) {
+            this.showSpinner();
+            var spotifyUrl = "https://api.spotify.com/v1/tracks/" + id;
+            this.$http.get(spotifyUrl).then(response => { //Getting track data
+                this.trackData = response.body;
+                this.hideSpinner('modal');
+                this.showModal('track');
+                console.log('this.trackData', this.trackData)
+            }, response => {
+                console.log('error callback1', response);
+            });
+        },
 
         /* Showing trackdata already in the search result */
         showTrackData: function(id) {

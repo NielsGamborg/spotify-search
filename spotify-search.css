@@ -329,12 +329,12 @@ button:disabled {
 }
 
 .dataModal table.topTracks {
-    margin-top: .5em;
+    margin: .5em 0 2em;
     width: 100%;
 }
 
 .dataModal table.topTracks td {
-    padding: .3em 2em;
+    padding: .4em 1em;
 }
 
 .dataModal a {
@@ -353,10 +353,21 @@ button:disabled {
     text-transform: uppercase;
 }
 
+.dataModal.artist .playbtn {
+    font-size: 11px;
+    margin: 0;
+    padding: .2em .5em;
+    white-space: nowrap;
+}
+
 .dataModal .playbtn:hover {
     background-color: #1ed760;
     -webkit-transform: scale(1.03);
     transform: scale(1.03);
+}
+
+td.playbtns {
+    vertical-align: middle;
 }
 
 
