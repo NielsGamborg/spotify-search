@@ -1,3 +1,5 @@
 TODOs
 
-Check preview and play from web
+-Check preview and play from web
+
+-Image modal

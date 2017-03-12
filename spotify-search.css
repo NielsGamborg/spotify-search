@@ -265,9 +265,14 @@ button:disabled {
     padding: 2em;
     position: fixed;
     top: 5%;
+    left: calc(50% - 500px);
+    width: 1000px;
+    z-index: 500;
+}
+
+.dataModal.track {
     left: calc(50% - 400px);
     width: 800px;
-    z-index: 500;
 }
 
 .hidePopUp {
@@ -282,8 +287,13 @@ button:disabled {
 
 .dataModal .column1 {
     float: left;
-    margin-right: 5%;
-    max-width: 50%;
+    margin-right: 4%;
+    max-width: 48%;
+}
+
+.dataModal .column2 {
+    float: left;
+    max-width: 48%;
 }
 
 .dataModal .column1 p {
@@ -307,8 +317,8 @@ button:disabled {
     color: white;
 }
 
-.dataModal table {
-    width: 45%;
+.dataModal.artist img {
+    max-height: 250px;
 }
 
 .dataModal th {
@@ -330,7 +340,6 @@ button:disabled {
 
 .dataModal table.topTracks {
     margin: .5em 0 2em;
-    width: 100%;
 }
 
 .dataModal table.topTracks td {

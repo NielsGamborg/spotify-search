@@ -178,33 +178,29 @@ Vue.component('artist-modal', {
                     <div class='noimage'></div>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th colspan="2">{{ artistData.name }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Popularity</td>
-                        <td>{{ artistData.popularity }}%</td>
-                    </tr>
-                    <tr>
-                        <td>Followers</td>
-                        <td>{{ artistData.followers.total | formatNumbers}}</td>
-                    </tr>
-                    <tr>
-                        <td>Genres</td>
-                        <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Spotify link</td>
-                        <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div class="column2"> 
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Popularity</td>
+                            <td>{{ artistData.popularity }}%</td>
+                        </tr>
+                        <tr>
+                            <td>Followers</td>
+                            <td>{{ artistData.followers.total | formatNumbers}}</td>
+                        </tr>
+                        <tr>
+                            <td>Genres</td>
+                            <td><span class="genreTag" v-for="genre in artistData.genres">{{ genre }}, </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Spotify link</td>
+                            <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>    
             <h3>Top {{ artistData.tracks.length }} tracks</h3>
             <table class="topTracks">
                 <thead>
@@ -249,37 +245,34 @@ Vue.component('track-modal', {
                 <p>
                     <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
                 </p>
-            </div> 
-            <table>
-                <thead>
+            </div>
+            <div class="column2"> 
+                <table>
                     <tr>
-                        <th colspan="2">{{ trackData.name }}</th>
+                        <td>Popularity</td>
+                        <td>{{trackData.popularity }}%</td>
                     </tr>
-                </thead>
-                <tr>
-                    <td>Popularity</td>
-                    <td>{{trackData.popularity }}%</td>
-                </tr>
-                <tr>
-                    <td>Duration</td>
-                    <td>{{trackData.duration_ms | minutesSeconds }}</td>
-                </tr>
-                </tr>
-                <tr>
-                    <td>Album</td>
-                    <td>{{trackData.album.name }}</td>
-                </tr>
-                </tr>
-                <tr>
-                    <td>Track number</td>
-                    <td>{{trackData.track_number }}</td>
-                </tr>
-                </tr>
-                <tr>
-                    <td>Explicit</td>
-                    <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
-                </tr>
-            </table>
+                    <tr>
+                        <td>Duration</td>
+                        <td>{{trackData.duration_ms | minutesSeconds }}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td>Album</td>
+                        <td>{{trackData.album.name }}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td>Track number</td>
+                        <td>{{trackData.track_number }}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td>Explicit</td>
+                        <td>{{ trackData.explicit?'Hell Yeah!':'No' }}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </transition>`
 })
