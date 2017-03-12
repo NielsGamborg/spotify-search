@@ -1,4 +1,3 @@
 TODOs
 
-Scrolling in modal with smaller screen
-
+Play and open artists top 10 tracks from artist modal. 

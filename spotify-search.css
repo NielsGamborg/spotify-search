@@ -302,6 +302,11 @@ button:disabled {
     margin: 1em 0 .5em;
 }
 
+.dataModal .link,
+.dataModal .link:hover {
+    color: white;
+}
+
 .dataModal table {
     width: 45%;
 }

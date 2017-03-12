@@ -67,7 +67,7 @@ Vue.component('search-pager', {
 })
 
 Vue.component('search-top', {
-    props: ['searchResult', 'searchMetaData', 'getTrackData', 'getArtistData', 'searchType', 'visualPager', 'showFirst'],
+    props: ['searchResult', 'searchMetaData', 'showTrackData', 'getArtistData', 'searchType', 'visualPager', 'showFirst'],
     template: `
     <div>
         <div  class="top" v-if="searchResult.length > 0">
@@ -77,25 +77,25 @@ Vue.component('search-top', {
                 <template  v-if="searchType == 'tracks'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
                         <div class="top-item" v-if="showFirst && index < 10">
-                            <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
-                            <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
-                            <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
+                            <div v-on:click="showTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
+                            <img v-on:click="showTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData(item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                         <div class="top-item" v-if="!showFirst && index >= 10">
-                            <div v-on:click="getTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
-                            <img v-on:click="getTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
-                            <div v-on:click="getArtistData('artist', item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
+                            <div v-on:click="showTrackData(item.id)" class="ellipsis text">{{ item.name }}</div>
+                            <img v-on:click="showTrackData(item.id)" v-if="item.album" :src="item.album.images[1].url" alt="Album photo" />
+                            <div v-on:click="getArtistData(item.artists[0].id)" v-if="item.artists" class="ellipsis text">{{ item.artists[0].name }}</div>
                         </div>
                     </transition>    
                 </template>
                 <template  v-if="searchType == 'artists'" v-for="(item, index) in searchResult">
                     <transition name="fadeSlide">
-                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="showFirst && index < 10">
+                        <div v-on:click="getArtistData(item.id)" class="top-item" v-if="showFirst && index < 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
                         </div>
-                        <div v-on:click="getArtistData('artist', item.id)" class="top-item" v-if="!showFirst && index >= 10">
+                        <div v-on:click="getArtistData(item.id)" class="top-item" v-if="!showFirst && index >= 10">
                             <div class="ellipsis text">{{ item.name }}</div>
                             <img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" />
                             <div v-else class='noimage'></div>
@@ -116,7 +116,7 @@ Vue.component('search-top', {
 })
 
 Vue.component('search-result', {
-    props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'getTrackData', 'searchType'],
+    props: ['searchResult', 'searchMetaData', 'sortResult', 'getArtistData', 'showTrackData', 'searchType'],
     template: `
     <div>
         <p v-if="searchResult.length == 0">Your search for: <strong> {{searchMetaData.query}}</strong> returned no {{searchType}}!</p>
@@ -133,8 +133,8 @@ Vue.component('search-result', {
             <tbody>
                 <tr v-for="item in searchResult">
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
-                    <td v-on:click="getTrackData(item.id)" class="link">{{item.name}}</td>
-                    <td><span v-for="artist in item.artists" v-on:click="getArtistData('artist', artist.id)"><span class="link">{{artist.name}}</span>, </span></td>
+                    <td v-on:click="showTrackData(item.id)" class="link">{{item.name}}</td>
+                    <td><span v-for="artist in item.artists" v-on:click="getArtistData(artist.id)"><span class="link">{{artist.name}}</span>, </span></td>
                     <td class="slim">{{item.duration_ms | minutesSeconds }}</td>
                     <td class="slim">{{ item.popularity }}%</td>
                 </tr>
@@ -153,8 +153,8 @@ Vue.component('search-result', {
             <tbody>
                 <tr v-for="item in searchResult">
                     <td class="slim no">{{item.staticIndex + 1 + searchMetaData.offset}}</td>
-                    <td v-on:click="getArtistData('artist', item.id)" class="photo"><img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" /></td>
-                    <td v-on:click="getArtistData('artist', item.id)" class="link">{{item.name}}</td>
+                    <td v-on:click="getArtistData(item.id)" class="photo"><img v-if="item.images && item.images[1]" :src="item.images[1].url" alt="Artist photo" /></td>
+                    <td v-on:click="getArtistData(item.id)" class="link">{{item.name}}</td>
                     <td class="genre"><span class="genreTag" v-for="genre in item.genres">{{ genre }}, </span></td>
                     <td class="slim no"><span v-if="item.followers">{{ item.followers.total | formatNumbers }}</span></td>
                 </tr>
@@ -230,7 +230,7 @@ Vue.component('artist-modal', {
 })
 
 Vue.component('track-modal', {
-    props: ['trackData', 'closeModal', 'modalHeight'],
+    props: ['trackData', 'closeModal', 'getArtistData', 'modalHeight'],
     template: `
     <transition name="fade">
         <div  class="dataModal track" v-bind:style="{maxHeight: modalHeight + 'px'}">
@@ -238,7 +238,11 @@ Vue.component('track-modal', {
             <h2>{{ trackData.name }}</h2>
             <div class="column1">
                 <img v-if="trackData.album.images[1]" :src="trackData.album.images[1].url" alt="album photo" />
-                <p>Artists: <span v-for="artist in trackData.artists">{{ artist.name }},</span> </p>           
+                <p>Artists: 
+                    <span v-for="artist in trackData.artists" v-on:click="getArtistData(artist.id)">
+                        <span class="link">{{ artist.name }}</span><span>, </span> 
+                    </span>     
+                </p>           
                 <p>Album: {{ trackData.album.name }}</p>
                 <p>
                     <a v-bind:href="trackData.external_urls.spotify" class="playbtn" target="_blank">Play on Spotify</a>
@@ -287,6 +291,7 @@ app = new Vue({
         modalOverlay: false,
         modaltrack: false,
         modalartist: false,
+        modalType: '',
         showFirst: true,
         searchResult: {},
         searchMetaData: {},
@@ -383,28 +388,31 @@ app = new Vue({
             this.searchResult = _.orderBy(this.searchResult, property, sortOrder);
         },
 
-        getArtistData: function(type, id) {
-            if (type === 'artist') {
-                this.showSpinner();
-                var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
-                var spotifyUrlTop = "https://api.spotify.com/v1/artists/" + id + "/top-tracks?country=dk";
-                this.$http.get(spotifyUrl).then(response => {
-                    this.artistData = response.body;
-                    this.$http.get(spotifyUrlTop).then(response => {
-                        var artistTopTracks = response.body;
-                        this.artistData = _.merge(this.artistData, artistTopTracks);
-                        this.hideSpinner('modal');
-                        this.showModal('artist');
-                    }, response => {
-                        console.log('error callback2', response);
-                    });
+        getArtistData: function(id) {
+            this.showSpinner();
+            var spotifyUrl = "https://api.spotify.com/v1/artists/" + id;
+            var spotifyUrlTop = "https://api.spotify.com/v1/artists/" + id + "/top-tracks?country=dk";
+            this.$http.get(spotifyUrl).then(response => { //Getting artist data
+                this.artistData = response.body;
+                this.$http.get(spotifyUrlTop).then(response => { // Getting artist toptracks
+                    var artistTopTracks = response.body;
+                    this.artistData = _.merge(this.artistData, artistTopTracks);
+                    this.hideSpinner('modal');
+                    this.showModal('artist');
                 }, response => {
-                    console.log('error callback1', response);
+                    console.log('error callback2', response);
                 });
-            }
+            }, response => {
+                console.log('error callback1', response);
+            });
         },
 
-        getTrackData: function(id) {
+        /*showTrackData: function(id) { 
+            console.log(id)
+        },*/
+
+        /* Showing trackdata already in the search result */
+        showTrackData: function(id) {
             for (var i = 0; i < this.searchResult.length; i++) {
                 if (this.searchResult[i].id == id) {
                     this.trackData = this.searchResult[i];
@@ -440,14 +448,12 @@ app = new Vue({
 
         showModal: function(type) {
             this.modalHeight = window.innerHeight - (window.innerHeight * 10 / 100);
-            if (type == "track") { this.modaltrack = true };
-            if (type == "artist") { this.modalartist = true };
+            this.modalType = type
         },
 
         closeModal: function() {
             this.modalOverlay = false;
-            this.modaltrack = false;
-            this.modalartist = false;
+            this.modalType = "";
         }
     }
 });
