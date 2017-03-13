@@ -278,14 +278,19 @@ button:disabled {
 
 .dataModal.image {
     background: transparent;
+    box-sizing: border-box;
     height: 100%;
     left: 5%;
     overflow: hidden;
+    padding: 0;
+    right: 5%;
     width: auto;
 }
 
 .dataModal.image img {
     border: 2em solid black;
+    margin: 0 auto;
+    display: block;
 }
 
 .hidePopUp {
