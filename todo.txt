@@ -2,4 +2,5 @@ TODOs
 
 -Check preview and play from web
 
+_genre søgning med filter
 -Image modal

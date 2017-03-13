@@ -25,8 +25,9 @@
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
                 <search-result :search-result="searchResult" :search-meta-data="searchMetaData" :get-artist-data="getArtistData" :show-track-data="showTrackData" :sort-result="sortResult" :search-type="searchType"></search-result>
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
-                <artist-modal v-if="modalType=='artist'" :artist-data="artistData" :close-modal="closeModal" :modal-height="modalHeight" :get-track-data="getTrackData"></artist-modal>
-                <track-modal v-if="modalType=='track'" :track-data="trackData" :close-modal="closeModal" :modal-height="modalHeight" :get-artist-data="getArtistData"></track-modal>
+                <artist-modal v-if="modalType=='artist'" :artist-data="artistData" :close-modal="closeModal" :modal-height="modalHeight" :get-track-data="getTrackData" :show-image="showImage"></artist-modal>
+                <track-modal v-if="modalType=='track'" :track-data="trackData" :close-modal="closeModal" :modal-height="modalHeight" :get-artist-data="getArtistData" :show-image="showImage"></track-modal>
+                <image-modal v-if="modalType=='image'" :modal-imageurl="modalImageurl" :close-modal="closeModal" :modal-height="modalHeight"></image-modal>
             </div>
 
             <div id="spinner" v-if="loading">

@@ -17,6 +17,7 @@ h1 {
 }
 
 img {
+    max-height: 100%;
     max-width: 100%;
 }
 
@@ -273,6 +274,18 @@ button:disabled {
 .dataModal.track {
     left: calc(50% - 400px);
     width: 800px;
+}
+
+.dataModal.image {
+    background: transparent;
+    height: 100%;
+    left: 5%;
+    overflow: hidden;
+    width: auto;
+}
+
+.dataModal.image img {
+    border: 2em solid black;
 }
 
 .hidePopUp {

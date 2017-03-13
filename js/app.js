@@ -165,14 +165,14 @@ Vue.component('search-result', {
 
 
 Vue.component('artist-modal', {
-    props: ['artistData', 'closeModal', 'getTrackData', 'modalHeight'],
+    props: ['artistData', 'closeModal', 'getTrackData', 'showImage', 'modalHeight'],
     template: `
     <transition name="fade">
         <div  class="dataModal artist" v-bind:style="{maxHeight: modalHeight + 'px'}"> 
             <div class="hidePopUp" v-on:click="closeModal">×</div>
             <h2>{{ artistData.name }}</h2>
             <div class="column1">
-                <img v-if="artistData.images[0]" :src="artistData.images[0].url" alt="artist photo" />
+                <img v-if="artistData.images[0]" v-on:click="showImage(artistData.images[0].url)" :src="artistData.images[0].url" alt="artist photo" />
                 <div v-else>
                     <p>No spotify image available</p>
                     <div class='noimage'></div>
@@ -228,14 +228,14 @@ Vue.component('artist-modal', {
 })
 
 Vue.component('track-modal', {
-    props: ['trackData', 'closeModal', 'getArtistData', 'modalHeight'],
+    props: ['trackData', 'closeModal', 'getArtistData', 'showImage', 'modalHeight'],
     template: `
     <transition name="fade">
         <div  class="dataModal track" v-bind:style="{maxHeight: modalHeight + 'px'}">
         <div class="hidePopUp" v-on:click="closeModal">×</div>
             <h2>{{ trackData.name }}</h2>
             <div class="column1">
-                <img v-if="trackData.album.images[1]" :src="trackData.album.images[1].url" alt="album photo" />
+                <img v-if="trackData.album.images[1]" v-on:click="showImage(trackData.album.images[0].url)" :src="trackData.album.images[1].url" alt="album photo" />
                 <p>Artists: 
                     <span v-for="artist in trackData.artists" v-on:click="getArtistData(artist.id)">
                         <span class="link">{{ artist.name }}</span><span>, </span> 
@@ -277,6 +277,16 @@ Vue.component('track-modal', {
     </transition>`
 })
 
+Vue.component('image-modal', {
+    props: ['closeModal', 'modalImageurl'],
+    template: `
+    <transition name="fade">
+        <div  class="dataModal image" v-on:click="closeModal">      
+            <img v-if="modalImageurl!= '' " :src="modalImageurl" alt="photo" />           
+        </div>
+    </transition>`
+})
+
 Vue.use(VueRx, Rx);
 
 app = new Vue({
@@ -293,7 +303,8 @@ app = new Vue({
         artistData: null,
         trackData: null,
         searchType: 'tracks',
-        modalHeight: ''
+        modalHeight: '',
+        modalImageurl: ''
     },
     components: {},
     methods: {
@@ -424,6 +435,12 @@ app = new Vue({
             }
             this.hideSpinner('modal');
             this.showModal('track');
+        },
+
+        showImage: function(src) {
+            this.showModal('image');
+            this.modalImageurl = src;
+            console.log('img src', src);
         },
 
         visualPager: function(action, direction) {
