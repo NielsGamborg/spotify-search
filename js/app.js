@@ -195,7 +195,7 @@ Vue.component('artist-modal', {
                             </td>
                         </tr>
                         <tr>
-                            <td>Spotify link</td>
+                            <td class="nowrap">Spotify link</td>
                             <td><a :href="artistData.external_urls.spotify">{{ artistData.name }}</a></td>
                         </tr>
                     </tbody>
