@@ -281,8 +281,8 @@ Vue.component('image-modal', {
     props: ['closeModal', 'modalImageurl'],
     template: `
     <transition name="fade">
-        <div  class="dataModal image" v-on:click="closeModal">      
-            <img v-if="modalImageurl!= '' " :src="modalImageurl" alt="photo" />           
+        <div  class="dataModal image" v-on:click="closeModal">    
+            <img v-if="modalImageurl!= ''" :src="modalImageurl" alt="photo" />           
         </div>
     </transition>`
 })
@@ -303,8 +303,11 @@ app = new Vue({
         artistData: null,
         trackData: null,
         searchType: 'tracks',
+        modalImage: false,
         modalHeight: '',
-        modalImageurl: ''
+        modalImageurl: '',
+        zIndex: 100,
+        opacity: 0.9
     },
     components: {},
     methods: {
@@ -370,9 +373,6 @@ app = new Vue({
                     disabledPrev: disabledPrev,
                     disabledNext: disabledNext
                 }
-
-                //console.log('response.body: ', response.body);
-                //console.log('searchMetaData: ', this.searchMetaData);
                 this.hideSpinner();
             }, response => {
                 console.log('error callback', response);
@@ -420,7 +420,6 @@ app = new Vue({
                 this.trackData = response.body;
                 this.hideSpinner('modal');
                 this.showModal('track');
-                console.log('this.trackData', this.trackData)
             }, response => {
                 console.log('error callback1', response);
             });
@@ -440,7 +439,7 @@ app = new Vue({
         showImage: function(src) {
             this.showModal('image');
             this.modalImageurl = src;
-            console.log('img src', src);
+            this.modalImage = true;
         },
 
         visualPager: function(action, direction) {
@@ -453,7 +452,6 @@ app = new Vue({
                     this.showFirst = false;
                 }
             }
-            console.log(this.showFirst)
         },
 
         showSpinner: function() {
@@ -469,12 +467,26 @@ app = new Vue({
 
         showModal: function(type) {
             this.modalHeight = window.innerHeight - (window.innerHeight * 10 / 100);
-            this.modalType = type
+            if (type != 'image') {
+                this.modalType = type
+            }
+            if (type == 'image') {
+                this.opacity = 0.95;
+                this.zIndex = 700;
+            }
         },
 
         closeModal: function() {
-            this.modalOverlay = false;
-            this.modalType = "";
+            if (this.modalImage) {
+                this.modalImage = false;
+                this.opacity = 0.8;
+                this.zIndex = 100;
+            } else {
+                this.modalOverlay = false;
+                this.modalImage = false;
+                this.modalType = "";
+            }
+
         }
     }
 });

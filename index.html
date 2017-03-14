@@ -27,7 +27,8 @@
                 <search-pager :get-search-result="getSearchResult" :search-meta-data="searchMetaData"></search-pager>
                 <artist-modal v-if="modalType=='artist'" :artist-data="artistData" :close-modal="closeModal" :modal-height="modalHeight" :get-track-data="getTrackData" :show-image="showImage"></artist-modal>
                 <track-modal v-if="modalType=='track'" :track-data="trackData" :close-modal="closeModal" :modal-height="modalHeight" :get-artist-data="getArtistData" :show-image="showImage"></track-modal>
-                <image-modal v-if="modalType=='image'" :modal-imageurl="modalImageurl" :close-modal="closeModal" :modal-height="modalHeight"></image-modal>
+                <!--<image-modal v-if="modalType=='image'" :modal-imageurl="modalImageurl" :close-modal="closeModal" :modal-height="modalHeight"></image-modal>-->
+                <image-modal v-if="modalImage" :modal-imageurl="modalImageurl" :close-modal="closeModal" :modal-height="modalHeight" :modal-image="modalImage"></image-modal>
             </div>
 
             <div id="spinner" v-if="loading">
@@ -35,7 +36,7 @@
                 <div id="spinnerText">Loading...</div>
             </div>
         </div>
-        <div id="overlay" v-if="loading || modalOverlay" v-on:click="closeModal"></div>
+        <div id="overlay" v-if="loading || modalOverlay" v-on:click="closeModal" v-bind:style="{opacity: opacity,zIndex: zIndex}"></div>
 
     </div>
     <script src="js/app.js"></script>
